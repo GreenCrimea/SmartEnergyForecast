@@ -15,12 +15,14 @@ class GUI(Frame):
             self.main=Toplevel()
             self.master=self.main
 
-        #self.welcome_page()
-        pt = TableView(self)
-        pt.pack()
+        self.master.geometry("1000x600")
+
+        self.welcome_page()
+
+        pt = TableView(self.main)
 
     def welcome_page(self):
         test_label = Label(self.main, text="TEST")
-        test_label.pack(padx=100, pady=100)
+        test_label.pack(side=LEFT, padx=50)
 
 
