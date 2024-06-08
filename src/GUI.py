@@ -1,4 +1,5 @@
 from tkinter import * 
+from src.TableView import TableView
 
 
 
@@ -14,7 +15,9 @@ class GUI(Frame):
             self.main=Toplevel()
             self.master=self.main
 
-        self.welcome_page()
+        #self.welcome_page()
+        pt = TableView(self)
+        pt.pack()
 
     def welcome_page(self):
         test_label = Label(self.main, text="TEST")
