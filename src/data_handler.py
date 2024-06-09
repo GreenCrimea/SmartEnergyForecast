@@ -6,7 +6,7 @@ import pandas as pd
 wPATHS = [
     "./datasets/weather_melbourne_06.23-05.24/IDCJDW3050.202306.csv",
     "./datasets/weather_melbourne_06.23-05.24/IDCJDW3050.202307.csv",
-    "./datasets/weather_melbourne_06.23-05.24/IDCJDW3050.202307.csv",
+    "./datasets/weather_melbourne_06.23-05.24/IDCJDW3050.202308.csv",
     "./datasets/weather_melbourne_06.23-05.24/IDCJDW3050.202309.csv",
     "./datasets/weather_melbourne_06.23-05.24/IDCJDW3050.202310.csv",
     "./datasets/weather_melbourne_06.23-05.24/IDCJDW3050.202311.csv",
