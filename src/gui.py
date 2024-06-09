@@ -36,13 +36,13 @@ class GUI(Frame):
 
         #style
         self.master.geometry(geometry)
-        self.font = ("Arial", "10")
+        self.font = ("Arial", "10", "Arial 10")
 
         #initialize default main layout
         self.create_layout_framing()
-        self.create_settings_panel()
         self.create_table()
         self.create_date_selector()
+        self.create_settings_panel()
         self.create_plot_panel()
 
         #bind resizing to layout
@@ -72,7 +72,7 @@ class GUI(Frame):
         """
         todo
         """
-        self.settings_panel = SettingsPanel(self.left_top_frame)
+        self.settings_panel = SettingsPanel(self.left_top_frame, self)
         self.settings_panel.pack_propagate(False)
 
     def create_plot_panel(self):

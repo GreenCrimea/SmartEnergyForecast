@@ -29,7 +29,7 @@ def import_dataset(path, index_col, concat=False, skiprows= False):
     frames = []
     for file in path:
         frames.append(pd.read_csv(file, index_col=index_col, encoding="latin-1", skiprows=skiprows))
-    return pd.concat(frames)
+    return pd.concat(frames, ignore_index=True)
 
 def get_index_cols(path, skiprows = False):
     """

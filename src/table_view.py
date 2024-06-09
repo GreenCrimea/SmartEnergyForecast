@@ -54,6 +54,7 @@ class TableView(Frame):
         self.table.bind("<ButtonRelease-1>", self.on_selected)
         self.table.setFont()
         self.table.show()
+        self.table.redraw()
 
     def on_selected(self, event):
         """
@@ -67,5 +68,15 @@ class TableView(Frame):
         """
         todo
         """
-        self.gui.table_view.table.movetoSelection(row=row, col=col)
-        self.gui.table_view.table.redraw()
+        self.table.movetoSelection(row=row, col=col)
+        self.table.redraw()
+
+    def set_inactive_rows(self):
+        """
+        todo
+        """
+        self.table.delete()
+        print(self.gui.date_selector.inactive_date_indexes)
+        df = self.gui.dataframe.copy(True)
+        df = df.drop(self.gui.date_selector.inactive_date_indexes)
+        self.load_dataframe(df)
