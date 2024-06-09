@@ -5,7 +5,9 @@ contains the TableView object for rendering a table to a tkinter instance
 """
 
 from tkinter import Frame
-from pandastable import Table, TableModel
+from pandastable import Table#, TableModel
+
+
 
 class TableView(Frame):
     """
@@ -39,8 +41,7 @@ class TableView(Frame):
                 dataframe (DataFrame) = dataframe to be displayed
         """
         #sample data
-        #self.df = TableModel.getSampleData()
-        
+        #self.df = TableModel.getSampleData()       
         self.df = dataframe
         self.table = Table(self.frame, dataframe=self.df, showtoolbar=False, showstatusbar=True)
         self.table.show()

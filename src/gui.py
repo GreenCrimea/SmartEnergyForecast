@@ -3,9 +3,10 @@ gui Module
 
 contains the gui object which is the parent of the tkinter instance
 """
-from tkinter import Frame, Toplevel, Label
+from tkinter import Frame, Toplevel
 from pandas import DataFrame
 from src.table_view import TableView
+from src.welcome_page import WelcomePage
 
 
 
@@ -37,7 +38,8 @@ class GUI(Frame):
         self.create_table()
 
         #open welcome page
-        self.welcome_page()
+        self.welcome = None
+        self.create_welcome_page()
 
     def create_table(self):
         """
@@ -46,9 +48,8 @@ class GUI(Frame):
         self.table = TableView(self.main)
         self.table.load_dataframe(DataFrame(0, index=[0], columns=[" "]))
 
-    def welcome_page(self):
+    def create_welcome_page(self):
         """
-            test 
+        initialize a WelcomePage object
         """
-        test_label = Label(self.main, text="TEST")
-        test_label.pack(side="left", padx=50)
+        self.welcome = WelcomePage(self.main)
