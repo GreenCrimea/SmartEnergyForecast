@@ -19,16 +19,17 @@ class TableView(Frame):
             parent (Tk) = The parent tk object 
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent, gui):
 
         #initialize superclass
         self.parent = parent
         Frame.__init__(self, self.parent)
         self.main = self.master
+        self.gui = gui
 
         #create frame
         self.frame = Frame(self.main)
-        self.frame.pack(fill="both", expand=True)
+        self.frame.pack(side="bottom", fill="both", expand=True)
 
         self.df = None
         self.table = None
@@ -44,4 +45,7 @@ class TableView(Frame):
         #self.df = TableModel.getSampleData()       
         self.df = dataframe
         self.table = Table(self.frame, dataframe=self.df, showtoolbar=False, showstatusbar=True)
+        self.table.font= self.gui.font[0]
+        self.table.fontsize = int(self.gui.font[1])
+        self.table.setFont()
         self.table.show()

@@ -5,7 +5,7 @@ from tkinter import Frame
 
 
 
-class SettingsPanel(Frame):
+class PlotPanel(Frame):
     """
     todo
     """
