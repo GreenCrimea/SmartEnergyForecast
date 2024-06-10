@@ -2,6 +2,7 @@
 todo
 """
 from tkinter import Frame, Label, Entry, Button, messagebox, Canvas, Scrollbar
+from matplotlib.pyplot import plot, bar, scatter
 from numpy import arange
 from PIL import ImageTk, Image
 from src.tooltip import CreateToolTip
@@ -32,6 +33,21 @@ class SettingsPanel(Frame):
         self.default_graph_settings()
         self.initialize_date_range()
         self.initialize_settings_panel()
+
+    def default_graph_settings(self):
+        """
+        todo
+        """
+        self.plot_type = {1: None}
+
+        self.subplot_dimensions = (1,1)
+        self.num_subplots = 1
+
+        self.x_data = {1: arange(len(self.gui.dataframe))}
+
+        self.y_data = {1: []}
+        self.y_data[1].append(self.data_1_active["Maximum temperature (°C)"])
+        self.y_data[1].append(self.data_2_active["Minimum temperature (°C)"])
 
     def initialize_settings_panel(self):
         """
@@ -65,9 +81,109 @@ class SettingsPanel(Frame):
         self.settings_canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
         self.settings_canvas.configure(yscrollcommand=self.settings_scrollbar.set)
 
+        #subplot size
+        self.subplot_frame = Frame(self.scrollable_frame)
+        self.subplot_frame.pack(side="top", expand=False, fill="x", pady=2)
+        self.subplot_label = Label(self.subplot_frame, text="Subplot Dimensions:")
+        self.subplot_label.pack(side="left", padx=4)
+        self.subplot_x_input = Entry(self.subplot_frame, width=3)
+        self.subplot_x_input.insert(0, str(self.subplot_dimensions[0]))
+        self.subplot_x_input.pack(side="left")
+        self.subplot_by_label = Label(self.subplot_frame, text="by")
+        self.subplot_by_label.pack(side="left", padx=4)
+        self.subplot_y_input = Entry(self.subplot_frame, width=3)
+        self.subplot_y_input.insert(0, str(self.subplot_dimensions[1]))
+        self.subplot_y_input.pack(side="left")
+        self.subplot_button = Button(self.subplot_frame, text="Ok", command=self.subplot_button_click)
+        self.subplot_button.pack(side="left", padx=3)
+
+        #plot type
+        self.plot_type_menu = {}
+        for i in range(self.num_subplots):
+            plot_type_frame = Frame(self.scrollable_frame)
+            plot_type_frame.pack(side="top", fill="x")
+            plot_type_label = Label(plot_type_frame, text=f"Plot {i+1} type:")
+            plot_type_label.pack(side="left", padx=4)
+            plot_plot_button = Button(plot_type_frame, text="plot", relief="sunken", command=lambda i=i: self.plot_button(i+1))
+            plot_plot_button.pack(side="left", padx=2)
+            plot_bar_button = Button(plot_type_frame, text="bar", relief="raised", command=lambda i=i: self.bar_button(i+1))
+            plot_bar_button.pack(side="left", padx=2)
+            plot_scatter_button = Button(plot_type_frame, text="scatter", relief="raised", command=lambda i=i: self.scatter_button(i+1))
+            plot_scatter_button.pack(side="left", padx=2)
+            new_dict = {i+1: [plot_type_frame, plot_type_label, plot_plot_button, plot_bar_button, plot_scatter_button]}
+            self.plot_type_menu.update(new_dict)
+
         for i in range(50):
             Label(self.scrollable_frame, text=f"Label {i}").pack()
             Entry(self.scrollable_frame).pack()
+
+    def subplot_button_click(self):
+        """
+        todo
+        """
+        self.subplot_dimensions = (int(self.subplot_x_input.get()), int(self.subplot_y_input.get()))
+        self.num_subplots = int(self.subplot_x_input.get()) * int(self.subplot_y_input.get())
+        self.redraw_settings()
+        y_data_ = self.y_data[1]
+        x_data_ = self.x_data[1]
+        self.gui.plot_panel.current_subplot = 1
+        self.gui.plot_panel.new_fig()
+        for i in range(self.num_subplots):
+            self.plot_type[i+1] = self.gui.plot_panel.call_plot    
+            self.y_data[i+1] = y_data_   
+            self.x_data[i+1] = x_data_
+            self.gui.plot_panel.redraw_plot()
+            self.gui.plot_panel.current_subplot = self.gui.plot_panel.current_subplot + 1
+        self.gui.plot_panel.current_subplot = 1
+
+    def redraw_settings(self):
+        """
+        todo
+        """
+        self.frame.forget()
+        self.frame.destroy()
+
+        self.frame = Frame(self.main)
+        self.frame.pack(side="top", fill="both", expand=True)
+        self.frame.pack_propagate(False)
+
+        self.initialize_settings_panel()        
+
+    def plot_button(self, subplot):
+        """
+        todo
+        """
+        self.gui.plot_panel.current_subplot = subplot
+        self.plot_type[subplot] = self.gui.plot_panel.call_plot
+        self.plot_type_menu[subplot][2].configure(relief="sunken")
+        self.plot_type_menu[subplot][3].configure(relief="raised")
+        self.plot_type_menu[subplot][4].configure(relief="raised")
+        self.gui.plot_panel.redraw_plot()
+        self.gui.plot_panel.current_subplot = 1
+
+    def bar_button(self, subplot):
+        """
+        todo
+        """
+        self.gui.plot_panel.current_subplot = subplot
+        self.plot_type[subplot] = self.gui.plot_panel.call_bar
+        self.plot_type_menu[subplot][2].configure(relief="raised")
+        self.plot_type_menu[subplot][3].configure(relief="sunken")
+        self.plot_type_menu[subplot][4].configure(relief="raised")
+        self.gui.plot_panel.redraw_plot()
+        self.gui.plot_panel.current_subplot = 1
+
+    def scatter_button(self, subplot):
+        """
+        todo
+        """
+        self.gui.plot_panel.current_subplot = subplot
+        self.plot_type[subplot] = self.gui.plot_panel.call_scatter
+        self.plot_type_menu[subplot][2].configure(relief="raised")
+        self.plot_type_menu[subplot][3].configure(relief="raised")
+        self.plot_type_menu[subplot][4].configure(relief="sunken")
+        self.gui.plot_panel.redraw_plot()
+        self.gui.plot_panel.current_subplot = 1
 
     def on_mouse_wheel(self, event):
         """
@@ -82,17 +198,6 @@ class SettingsPanel(Frame):
         elif event.num == 5:
             # Linux scroll down
             self.settings_canvas.yview_scroll(1, "units")
-
-    def default_graph_settings(self):
-        """
-        todo
-        """
-        self.x_data = arange(len(self.gui.dataframe))
-
-        self.y_data = []
-        self.y_data.append(self.data_1_active["Maximum temperature (°C)"])
-        self.y_data.append(self.data_2_active["Minimum temperature (°C)"])
-
 
     def initialize_date_range(self):
         """
