@@ -75,8 +75,8 @@ class TableView(Frame):
         """
         todo
         """
-        self.table.delete()
-        print(self.gui.date_selector.inactive_date_indexes)
-        df = self.gui.dataframe.copy(True)
-        df = df.drop(self.gui.date_selector.inactive_date_indexes)
-        self.load_dataframe(df)
+        if self.gui.date_selector.inactive_date_indexes is not None:
+            self.table.delete()
+            df = self.gui.dataframe.copy(True)
+            df = df.drop(self.gui.date_selector.inactive_date_indexes)
+            self.load_dataframe(df)

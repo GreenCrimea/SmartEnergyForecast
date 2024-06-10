@@ -3,7 +3,7 @@ gui Module
 
 contains the gui object which is the parent of the tkinter instance
 """
-from tkinter import Frame, Toplevel
+from tkinter import Frame, Toplevel, Button
 from src.table_view import TableView
 from src.welcome_page import WelcomePage
 from src.date_selector import DateSelector
@@ -38,8 +38,14 @@ class GUI(Frame):
         self.master.geometry(geometry)
         self.font = ("Arial", "10", "Arial 10")
 
+        #active data
+        self.dataframe = None
+
         #initialize default main layout
         self.create_layout_framing()
+        self.create_table_toolbar()
+        self.load_data()
+        self.select_table()
         self.create_table()
         self.create_date_selector()
         self.create_settings_panel()
@@ -51,13 +57,87 @@ class GUI(Frame):
         #open welcome page
         #self.create_welcome_page()
 
+    def create_table_toolbar(self):
+        """
+        todo
+        """
+        self.selected_table = 1
+
+        self.table_1_button = Button(self.right_bar_frame, text="Table 1", relief="sunken", command=self.table_1_click)
+        self.table_1_button.pack(side="left", expand=False, fill="y", padx=8)
+        self.table_1_button.pack_propagate(False)
+
+        self.table_2_button = Button(self.right_bar_frame, text="Table 2", relief="raised", command=self.table_2_click)
+        self.table_2_button.pack(side="left", expand=False, fill="y", padx=8)
+        self.table_2_button.pack_propagate(False)
+
+        self.analyze_button = Button(self.right_bar_frame, text="Analyze Dataset", command=None)
+        self.analyze_button.pack(side="right", expand=False, fill="y", padx=14)
+        self.analyze_button.pack_propagate(False)
+
+    def table_1_click(self):
+        """
+        todo
+        """
+        if self.selected_table == 1:
+            pass
+        else:
+            self.selected_table = 1
+            self.select_table()
+            self.table_view.table.forget()
+            self.table_view.table.destroy()
+            self.table_view.frame.forget()
+            self.table_view.frame.destroy()
+            self.table_view.forget()
+            self.table_view.destroy()
+            self.create_table()
+            self.table_view.set_inactive_rows()
+            self.table_1_button.config(relief="sunken")
+            self.table_2_button.config(relief="raised")
+
+    def table_2_click(self):
+        """
+        todo
+        """
+        if self.selected_table == 2:
+            pass
+        else:
+            self.selected_table = 2
+            self.select_table()
+            self.table_view.table.forget()
+            self.table_view.table.destroy()
+            self.table_view.frame.forget()
+            self.table_view.frame.destroy()
+            self.table_view.forget()
+            self.table_view.destroy()
+            self.create_table()
+            self.table_view.set_inactive_rows()
+            self.table_2_button.configure(relief="sunken")
+            self.table_1_button.configure(relief="raised")
+
+    def load_data(self):
+        """
+        todo
+        """
+        
+        self.data_1 = import_dataset(wPATHS, index_col=False, concat=True, skiprows=8)
+        self.data_2 = import_dataset(wPATHS, index_col=False, concat=True, skiprows=8)
+        self.data_1 = drop_extra_col(self.data_1)
+
+    def select_table(self):
+        """
+        todo
+        """
+        if self.selected_table == 1:
+            self.dataframe = self.data_1
+        elif self.selected_table == 2:
+            self.dataframe = self.data_2
+
     def create_table(self):
         """
         initialize a Tableview object in its empty state 
         """
-        self.table_view = TableView(self.right_bottom_frame, self)
-        self.dataframe = import_dataset(wPATHS, index_col=False, concat=True, skiprows=8)
-        self.dataframe = drop_extra_col(self.dataframe)
+        self.table_view = TableView(self.right_table_frame, self)   
         self.table_view.load_dataframe(self.dataframe)
         self.table_view.pack_propagate(False)
 
@@ -106,7 +186,8 @@ class GUI(Frame):
         self.left_top_frame.config(height=int(0.65 * height))
         self.left_bottom_frame.config(height=int(0.35 * height))
         self.right_bottom_frame.config(height=int(0.35 * height))
-        self.right_top_frame.config(height=int(0.65 * height))
+        self.right_top_frame.config(height=int(0.60 * height))
+        self.right_table_frame.config(height=int((0.40 * height) - 30))
 
     def create_layout_framing(self):
         """
@@ -135,3 +216,11 @@ class GUI(Frame):
         self.right_top_frame = Frame(self.right_frame)
         self.right_top_frame.pack(side="top", expand=True, fill="both")
         self.right_top_frame.pack_propagate(False)
+
+        self.right_bar_frame = Frame(self.right_bottom_frame, height=30)
+        self.right_bar_frame.pack(side="top", expand=True, fill="both")
+        self.right_bar_frame.pack_propagate(False)
+
+        self.right_table_frame = Frame(self.right_bottom_frame)
+        self.right_table_frame.pack(side="bottom", expand=True, fill="both")
+        self.right_table_frame.pack_propagate(False)

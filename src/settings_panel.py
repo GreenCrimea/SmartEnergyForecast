@@ -53,8 +53,13 @@ class SettingsPanel(Frame):
 
         self.date_to_button = Button(self.date_to, image=self.calendar_icon,
                                        command=self.select_date_to)
-        self.date_to_button.pack(side="right", padx=8)
+        self.date_to_button.pack(side="right", padx=3)
         CreateToolTip(self.date_to_button, text="Use calendar to select ending date")
+
+        self.date_to_confirm = Button(self.date_to, text="Ok", command=self.apply_date_to)
+        self.date_to_confirm.pack(side="right")
+        CreateToolTip(self.date_to_confirm, text="Apply ending date input")
+
 
         #date from
         self.date_from = Frame(self.frame, height=28)
@@ -75,10 +80,32 @@ class SettingsPanel(Frame):
 
         self.date_from_button = Button(self.date_from, image=self.calendar_icon,
                                        command=self.select_date_from)
-        self.date_from_button.pack(side="right", padx=8)
+        self.date_from_button.pack(side="right", padx=3)
         CreateToolTip(self.date_from_button, text="Use calendar to select starting date")
 
+        self.date_from_confirm = Button(self.date_from, text="Ok", command=self.apply_date_from)
+        self.date_from_confirm.pack(side="right")
+        CreateToolTip(self.date_from_confirm, text="Apply starting date input")
+
         self.update_date_fromto()
+
+    def apply_date_from(self):
+        """
+        todo
+        """
+        input = self.date_from_date.get()
+        if input in self.gui.date_selector.dates_str:
+            self.gui.date_selector.selection = input
+            self.set_date_from()
+
+    def apply_date_to(self):
+        """
+        todo
+        """
+        input = self.date_to_date.get()
+        if input in self.gui.date_selector.dates_str:
+            self.gui.date_selector.selection = input
+            self.set_date_to()
 
     def update_date_fromto(self):
         """

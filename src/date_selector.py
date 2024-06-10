@@ -29,6 +29,7 @@ class DateSelector(Frame):
 
         start_date = gui.dataframe["Date"].iloc[0]
         start_date = start_date.split("-")
+        self.inactive_date_indexes = None
 
         #create calendar
         self.calendar = Calendar(self.frame, font=self.gui.font[2], selectmode='day', locale='en_US',
