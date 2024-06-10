@@ -146,9 +146,34 @@ class SettingsPanel(Frame):
                               y_data_select_button, y_data_ok_button]}
             self.y_data_menu.update(new_dict)
 
-        for i in range(50):
-            Label(self.scrollable_frame, text=f"Label {i}").pack()
-            Entry(self.scrollable_frame).pack()
+        #title
+        self.title_menu = {}
+        for i in range(self.num_subplots):
+            title_frame = Frame(self.scrollable_frame, height=30)
+            title_frame.pack(side="top", fill="x", pady=4)
+            title_frame.pack_propagate(False)
+            title_label = Label(title_frame, text=f"Plot {i+1} title:")
+            title_label.pack(side="left", padx=4)
+            title_input = Entry(title_frame, width=19)
+            title_input.pack(side="left", padx=4)
+            title_ok_button = Button(title_frame, text="Ok", command= lambda i=i: self.update_title(i+1))
+            title_ok_button.pack(side="right")
+            new_dict = {i+1: [title_frame, title_label, title_input, title_ok_button]}
+            self.title_menu.update(new_dict)
+
+            
+
+    def update_title(self, i):
+        """
+        todo
+        """
+        input = self.title_menu[i][2].get()
+        title1 = self.gui.plot_panel.titles[0]
+        if len(self.gui.plot_panel.titles) < self.num_subplots:
+            for i in range(len(self.num_subplots) -1):
+                self.gui.plot_panel.titles.append(title1)
+        self.gui.plot_panel.titles[i-1] = input
+        self.redraw_settings()
 
     def update_ydata(self, i):
         """
@@ -163,6 +188,8 @@ class SettingsPanel(Frame):
 
         column_list = []
         for item in input_list:
+            if item[0] == " ":
+                item = item[1:]
             column_list.append(item)
             if item not in data_list:
                 self.y_data[i].append(self.data_1_active[item])
@@ -246,19 +273,25 @@ class SettingsPanel(Frame):
         new_y_data = {}
         for i in range(self.num_subplots):
             new_y_data.update({i+1: []})
-            if len(self.active_columns) > 1:
+            if len(self.active_columns) == self.num_subplots:
                 for j in range(len(self.active_columns[i+1])):
                     new_y_data[i+1].append(self.data_1_active[self.active_columns[i+1][j]])
             else:
+                new_dict_ = {}
                 for j in range(len(self.active_columns[1])):
+                    new_dict_.update({j+1: self.active_columns[1]})
                     new_y_data[i+1].append(self.data_1_active[self.active_columns[1][j]])
+                self.active_columns = new_dict_
         self.y_data = new_y_data
         self.x_data[1] = arange(len(self.y_data[1][0]))
         x_data_ = self.x_data[1]
         self.gui.plot_panel.current_subplot = 1
         self.gui.plot_panel.new_fig()
         for i in range(self.num_subplots):
-            self.plot_type[i+1] = self.gui.plot_panel.call_plot  
+            if len(self.gui.plot_panel.titles) < self.num_subplots:
+                if i > 0 and i >= len(self.gui.plot_panel.titles):
+                    self.gui.plot_panel.titles.append(f"Plot {i+1}")
+            self.plot_type[i+1] = self.gui.plot_panel.call_plot 
             if i+1 not in self.y_data:
                 self.y_data[i+1] = []
                 for item in self.y_data[1]:

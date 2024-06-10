@@ -29,8 +29,7 @@ class PlotPanel(Frame):
 
         #set plot default
         self.gui.settings_panel.plot_type[self.current_subplot] = self.call_plot
-
-
+        self.titles = [f'Plot {self.current_subplot}']
 
         #draw default graph
         self.init_graph()
@@ -66,7 +65,7 @@ class PlotPanel(Frame):
             self.current_subplot
         )
         self.gui.settings_panel.plot_type[self.current_subplot]()
-        self.ax.set_title('Sample Matplotlib Graph')
+        self.ax.set_title(self.titles[self.current_subplot-1])
         self.ax.set_xlabel('X-axis Label')
         self.ax.set_ylabel('Y-axis Label')
 
@@ -86,7 +85,7 @@ class PlotPanel(Frame):
             1
         )
         self.gui.settings_panel.plot_type[self.current_subplot]()
-        self.ax.set_title('Sample Matplotlib Graph')
+        self.ax.set_title(f'Plot {self.current_subplot}')
         self.ax.set_xlabel('X-axis Label')
         self.ax.set_ylabel('Y-axis Label')
 
