@@ -30,6 +30,9 @@ class PlotPanel(Frame):
         #set plot default
         self.gui.settings_panel.plot_type[self.current_subplot] = self.call_plot
         self.titles = [f'Plot {self.current_subplot}']
+        self.y_labels = ["Y-axis"]
+        self.x_labels = ["X-axis"]
+
 
         #draw default graph
         self.init_graph()
@@ -66,8 +69,8 @@ class PlotPanel(Frame):
         )
         self.gui.settings_panel.plot_type[self.current_subplot]()
         self.ax.set_title(self.titles[self.current_subplot-1])
-        self.ax.set_xlabel('X-axis Label')
-        self.ax.set_ylabel('Y-axis Label')
+        self.ax.set_xlabel(self.x_labels[self.current_subplot-1])
+        self.ax.set_ylabel(self.y_labels[self.current_subplot-1])
 
         #draw new canvas
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.frame)
@@ -85,9 +88,9 @@ class PlotPanel(Frame):
             1
         )
         self.gui.settings_panel.plot_type[self.current_subplot]()
-        self.ax.set_title(f'Plot {self.current_subplot}')
-        self.ax.set_xlabel('X-axis Label')
-        self.ax.set_ylabel('Y-axis Label')
+        self.ax.set_title(f"Minimum and Maximum Temperatures")
+        self.ax.set_xlabel('Days')
+        self.ax.set_ylabel('Temperature (c)')
 
     def call_plot(self):
         """

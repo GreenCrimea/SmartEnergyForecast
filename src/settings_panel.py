@@ -161,7 +161,59 @@ class SettingsPanel(Frame):
             new_dict = {i+1: [title_frame, title_label, title_input, title_ok_button]}
             self.title_menu.update(new_dict)
 
-            
+        #y label
+        self.y_label_menu = {}
+        for i in range(self.num_subplots):
+            y_label_frame = Frame(self.scrollable_frame, height=30)
+            y_label_frame.pack(side="top", fill="x", pady=4)
+            y_label_frame.pack_propagate(False)
+            y_label_label = Label(y_label_frame, text=f"Plot {i+1} y-Label:")
+            y_label_label.pack(side="left", padx=4)
+            y_label_input = Entry(y_label_frame, width=17)
+            y_label_input.pack(side="left", padx=4)
+            y_label_ok_button = Button(y_label_frame, text="Ok", command= lambda i=i: self.update_y_label(i+1))
+            y_label_ok_button.pack(side="right")
+            new_dict = {i+1: [y_label_frame, y_label_label, y_label_input, y_label_ok_button]}
+            self.y_label_menu.update(new_dict)
+
+        #x label
+        self.x_label_menu = {}
+        for i in range(self.num_subplots):
+            x_label_frame = Frame(self.scrollable_frame, height=30)
+            x_label_frame.pack(side="top", fill="x", pady=4)
+            x_label_frame.pack_propagate(False)
+            x_label_label = Label(x_label_frame, text=f"Plot {i+1} x-Label:")
+            x_label_label.pack(side="left", padx=4)
+            x_label_input = Entry(x_label_frame, width=17)
+            x_label_input.pack(side="left", padx=4)
+            x_label_ok_button = Button(x_label_frame, text="Ok", command= lambda i=i: self.update_x_label(i+1))
+            x_label_ok_button.pack(side="right")
+            new_dict = {i+1: [x_label_frame, x_label_label, x_label_input, x_label_ok_button]}
+            self.x_label_menu.update(new_dict)
+
+    def update_x_label(self, i):
+        """
+        todo
+        """
+        input = self.x_label_menu[i][2].get()
+        label1 = self.gui.plot_panel.x_labels[0]
+        if len(self.gui.plot_panel.x_labels) < self.num_subplots:
+            for i in range(len(self.num_subplots) -1):
+                self.gui.plot_panel.x_labels.append(label1)
+        self.gui.plot_panel.x_labels[i-1] = input
+        self.redraw_settings()
+
+    def update_y_label(self, i):
+        """
+        todo
+        """
+        input = self.y_label_menu[i][2].get()
+        label1 = self.gui.plot_panel.y_labels[0]
+        if len(self.gui.plot_panel.y_labels) < self.num_subplots:
+            for i in range(len(self.num_subplots) -1):
+                self.gui.plot_panel.y_labels.append(label1)
+        self.gui.plot_panel.y_labels[i-1] = input
+        self.redraw_settings()
 
     def update_title(self, i):
         """
@@ -288,9 +340,21 @@ class SettingsPanel(Frame):
         self.gui.plot_panel.current_subplot = 1
         self.gui.plot_panel.new_fig()
         for i in range(self.num_subplots):
+
+            #titles
             if len(self.gui.plot_panel.titles) < self.num_subplots:
                 if i > 0 and i >= len(self.gui.plot_panel.titles):
                     self.gui.plot_panel.titles.append(f"Plot {i+1}")
+            #y labels
+            if len(self.gui.plot_panel.y_labels) < self.num_subplots:
+                if i > 0 and i >= len(self.gui.plot_panel.y_labels):
+                    self.gui.plot_panel.y_labels.append(f"Y-axis")
+
+            #x labels
+            if len(self.gui.plot_panel.x_labels) < self.num_subplots:
+                if i > 0 and i >= len(self.gui.plot_panel.x_labels):
+                    self.gui.plot_panel.x_labels.append(f"X-axis")
+
             self.plot_type[i+1] = self.gui.plot_panel.call_plot 
             if i+1 not in self.y_data:
                 self.y_data[i+1] = []
