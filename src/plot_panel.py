@@ -88,7 +88,7 @@ class PlotPanel(Frame):
             1
         )
         self.gui.settings_panel.plot_type[self.current_subplot]()
-        self.ax.set_title(f"Minimum and Maximum Temperatures")
+        self.ax.set_title("Minimum and Maximum Temperatures")
         self.ax.set_xlabel('Days')
         self.ax.set_ylabel('Temperature (c)')
 

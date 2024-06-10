@@ -59,25 +59,31 @@ class GUI(Frame):
 
     def create_table_toolbar(self):
         """
-        todo
+        creates the toolbar above the table, containing buttons to
+        switch between table1 and table2, as well as an analyze dataset
+        button
         """
         self.selected_table = 1
 
+        #table 1 button
         self.table_1_button = Button(self.right_bar_frame, text="Table 1", relief="sunken", command=self.table_1_click)
         self.table_1_button.pack(side="left", expand=False, fill="y", padx=8)
         self.table_1_button.pack_propagate(False)
 
+        #table 2 button
         self.table_2_button = Button(self.right_bar_frame, text="Table 2", relief="raised", command=self.table_2_click)
         self.table_2_button.pack(side="left", expand=False, fill="y", padx=8)
         self.table_2_button.pack_propagate(False)
 
+        #analyze dataset button
         self.analyze_button = Button(self.right_bar_frame, text="Analyze Dataset", command=None)
         self.analyze_button.pack(side="right", expand=False, fill="y", padx=14)
         self.analyze_button.pack_propagate(False)
 
     def table_1_click(self):
         """
-        todo
+        triggered when the table1 button is clicked, destroys the current
+        table and re-renders table1
         """
         if self.selected_table == 1:
             pass
@@ -97,7 +103,8 @@ class GUI(Frame):
 
     def table_2_click(self):
         """
-        todo
+        triggered when the table2 button is clicked, destroys the current
+        table and re-renders table2
         """
         if self.selected_table == 2:
             pass
@@ -117,16 +124,15 @@ class GUI(Frame):
 
     def load_data(self):
         """
-        todo
+        use the data_handler module to import the datasets
         """
-        
         self.data_1 = import_dataset(wPATHS, index_col=False, concat=True, skiprows=8)
         self.data_2 = import_dataset(wPATHS, index_col=False, concat=True, skiprows=8)
         self.data_1 = drop_extra_col(self.data_1)
 
     def select_table(self):
         """
-        todo
+        change which dataset is in self.dataframe based on the selected table
         """
         if self.selected_table == 1:
             self.dataframe = self.data_1
@@ -135,7 +141,7 @@ class GUI(Frame):
 
     def create_table(self):
         """
-        initialize a Tableview object in its empty state 
+        initialize a Tableview object 
         """
         self.table_view = TableView(self.right_table_frame, self)   
         self.table_view.load_dataframe(self.dataframe)
@@ -143,21 +149,21 @@ class GUI(Frame):
 
     def create_date_selector(self):
         """
-        todo
+        initialize a DateSelector object 
         """
         self.date_selector = DateSelector(self.left_bottom_frame, self)
         self.date_selector.pack_propagate(False)
 
     def create_settings_panel(self):
         """
-        todo
+        Initialize a SettingsPanel object
         """
         self.settings_panel = SettingsPanel(self.left_top_frame, self)
         self.settings_panel.pack_propagate(False)
 
     def create_plot_panel(self):
         """
-        todo
+        Initalize a PlotPanel object
         """
         self.plot_panel = PlotPanel(self.right_top_frame, self)
         self.plot_panel.pack_propagate(False)
@@ -171,12 +177,16 @@ class GUI(Frame):
 
     def update_sizes(self, event):
         """
-        todo
+        triggered on a window resize, ensures that the scale and ratio
+        of different elements stays consistent
+
+            Arguments:
+                event (?) = Tk event, not used
         """
         width = self.main.winfo_width()
         height = self.main.winfo_height()
 
-        # Update left frame width to 20% of total width
+        # Update left frame width
         if width < 1001:
             self.left_frame.config(width=int(0.35 * width))
         else:
@@ -191,7 +201,7 @@ class GUI(Frame):
 
     def create_layout_framing(self):
         """
-        todo
+        creates a hierarchy of frames to then pack the main objects into
         """
         self.left_frame = Frame(self.main)
         self.left_frame.pack(side="left", fill="y")
