@@ -192,6 +192,22 @@ class SettingsPanel(Frame):
             new_dict = {i+1: [x_label_frame, x_label_label, x_label_input, x_label_ok_button]}
             self.x_label_menu.update(new_dict)
 
+        #x ticks
+        self.x_ticks_menu = {}
+        for i in range(self.num_subplots):
+            var = IntVar()
+            x_ticks_frame = Frame(self.scrollable_frame, height=30)
+            x_ticks_frame.pack(side="top", fill="x", pady=4)
+            x_ticks_frame.pack_propagate(False)
+            x_ticks_label = Label(x_ticks_frame, text=f"Plot {i+1} x-ticks:")
+            x_ticks_label.pack(side="left", fill="y", padx=4)
+            x_ticks_days_button = Radiobutton(x_ticks_frame, variable=var, value=1, text="Days", 
+                                           command=lambda i=i: self.x_ticks_days(i))
+            x_ticks_days_button.pack(side="left", fill="y", padx=2)
+            x_ticks_date_button = Radiobutton(x_ticks_frame, variable=var, value=0, text="Date", 
+                                command=lambda i=i: self.x_ticks_date(i))
+            x_ticks_date_button.pack(side="left", fill="y", padx=2)
+
         #legend
         self.legend_menu = {}
         for i in range(self.num_subplots):
@@ -223,6 +239,28 @@ class SettingsPanel(Frame):
             self.legend_menu.update(new_dict)
 
         #
+
+    def x_ticks_date(self, i):
+        """
+        todo
+        """
+        if self.gui.plot_panel.x_ticks[i] == 1:
+            self.gui.plot_panel.x_ticks[i] = 0
+        if len(self.gui.plot_panel.x_ticks) < self.num_subplots:
+            for i in range(len(self.num_subplots) -1):
+                self.gui.plot_panel.x_ticks.append(1)
+        self.redraw_settings()
+
+    def x_ticks_days(self, i):
+        """
+        todo
+        """
+        if self.gui.plot_panel.x_ticks[i] == 0:
+            self.gui.plot_panel.x_ticks[i] = 1
+        if len(self.gui.plot_panel.x_ticks) < self.num_subplots:
+            for i in range(len(self.num_subplots) -1):
+                self.gui.plot_panel.x_ticks.append(1)
+        self.redraw_settings()
 
     def legend_on(self, i):
         """
@@ -398,6 +436,11 @@ class SettingsPanel(Frame):
             if len(self.gui.plot_panel.legend_loc) < self.num_subplots:
                 if i > 0:
                     self.gui.plot_panel.legend_loc.append("lower right")
+
+            #x ticks
+            if len(self.gui.plot_panel.x_ticks) < self.num_subplots:
+                if i > 0:
+                    self.gui.plot_panel.x_ticks.append(1)
 
             new_y_data.update({i+1: []})
             if len(self.active_columns) == self.num_subplots:

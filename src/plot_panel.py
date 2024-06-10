@@ -4,6 +4,7 @@ todo
 from tkinter import Frame
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from numpy import arange, linspace
 
 
 
@@ -34,6 +35,7 @@ class PlotPanel(Frame):
         self.x_labels = ["X-axis"]
         self.legend = [True]
         self.legend_loc = ["lower right"]
+        self.x_ticks = [1]
 
 
         #draw default graph
@@ -75,6 +77,12 @@ class PlotPanel(Frame):
         self.ax.set_ylabel(self.y_labels[self.current_subplot-1])
         if self.legend[self.current_subplot-1] == True:
             self.ax.legend(loc=self.legend_loc[self.current_subplot-1])
+        if self.x_ticks[self.current_subplot-1] == 0:
+            labels = []
+            for i in linspace(0, len(self.gui.date_selector.active_dates)-1, 5).astype(int):
+                labels.append(self.gui.date_selector.active_dates[i])
+            self.ax.set_xticks(linspace(1, len(self.gui.date_selector.active_dates), 5),
+                                   labels=labels)
 
         #draw new canvas
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.frame)
