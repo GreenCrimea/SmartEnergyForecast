@@ -1,7 +1,8 @@
 """
 todo
 """
-from tkinter import Frame, Label, Entry, Button, messagebox, Canvas, Scrollbar, Text
+from tkinter import Frame, Label, Entry, Button, messagebox, Canvas, Scrollbar, Text, IntVar, Radiobutton
+from tkinter.ttk import Combobox
 from matplotlib.pyplot import plot, bar, scatter
 from numpy import arange
 from PIL import ImageTk, Image
@@ -191,6 +192,70 @@ class SettingsPanel(Frame):
             new_dict = {i+1: [x_label_frame, x_label_label, x_label_input, x_label_ok_button]}
             self.x_label_menu.update(new_dict)
 
+        #legend
+        self.legend_menu = {}
+        for i in range(self.num_subplots):
+            values = ["best", 'upper left', 'upper right', 'lower left', 'lower right', \
+                      'upper center', 'lower center', 'center left', 'center right', "center"]
+            var=IntVar()
+            legend_frame = Frame(self.scrollable_frame, height=30)
+            legend_frame.pack(side="top", fill="x", pady=4)
+            legend_frame.pack_propagate(False)
+            legend_label = Label(legend_frame, text=f"Plot {i+1} Legend:")
+            legend_label.pack(side="left", fill="y", padx=4)
+            legend_on_button = Radiobutton(legend_frame, variable=var, value=1, text="On", 
+                                           command=lambda i=i: self.legend_on(i))
+            legend_on_button.pack(side="left", fill="y", padx=2)
+            legend_off_button = Radiobutton(legend_frame, variable=var, value=0, text="Off", 
+                                command=lambda i=i: self.legend_off(i))
+            legend_off_button.pack(side="left", fill="y", padx=2)
+            legend_loc_frame = Frame(self.scrollable_frame, height=30)
+            legend_loc_frame.pack(side="top", fill="x", pady=4)
+            legend_loc_frame.pack_propagate(False)
+            legend_loc_label = Label(legend_loc_frame, text="Legend location:")
+            legend_loc_label.pack(side="left", fill="y", padx=3)
+            legend_loc_input = Combobox(legend_loc_frame, values=values, width=15)
+            legend_loc_input.pack(side="left", fill="y", padx=3)
+            legend_loc_button = Button(legend_loc_frame, text="Ok", command=lambda i=i: self.legend_loc(i))
+            legend_loc_button.pack(side="right")
+            new_dict = {i+1: [legend_frame, legend_label, legend_on_button, legend_off_button,
+                              legend_loc_frame, legend_loc_label, legend_loc_input, legend_loc_button]}
+            self.legend_menu.update(new_dict)
+
+        #
+
+    def legend_on(self, i):
+        """
+        todo
+        """
+        if self.gui.plot_panel.legend[i] == False:
+            self.gui.plot_panel.legend[i] = True
+        if len(self.gui.plot_panel.legend) < self.num_subplots:
+            for i in range(len(self.num_subplots) -1):
+                self.gui.plot_panel.legend.append(False)
+        self.redraw_settings()
+
+    def legend_off(self, i):
+        """
+        todo
+        """
+        if self.gui.plot_panel.legend[i] == True:
+            self.gui.plot_panel.legend[i] = False
+        if len(self.gui.plot_panel.legend) < self.num_subplots:
+            for i in range(len(self.num_subplots) -1):
+                self.gui.plot_panel.legend.append(False)
+        self.redraw_settings()
+
+    def legend_loc(self, i):
+        """
+        todo
+        """
+        self.gui.plot_panel.legend_loc[i] = self.legend_menu[i+1][6].get()
+        if len(self.gui.plot_panel.legend_loc) < self.num_subplots:
+            for i in range(len(self.num_subplots) -1):
+                self.gui.plot_panel.legend_loc.append("lower right")
+        self.redraw_settings()
+
     def update_x_label(self, i):
         """
         todo
@@ -324,6 +389,16 @@ class SettingsPanel(Frame):
 
         new_y_data = {}
         for i in range(self.num_subplots):
+            #legend
+            if len(self.gui.plot_panel.legend) < self.num_subplots:
+                if i > 0:
+                    self.gui.plot_panel.legend.append(True)
+
+            #legend location
+            if len(self.gui.plot_panel.legend_loc) < self.num_subplots:
+                if i > 0:
+                    self.gui.plot_panel.legend_loc.append("lower right")
+
             new_y_data.update({i+1: []})
             if len(self.active_columns) == self.num_subplots:
                 for j in range(len(self.active_columns[i+1])):

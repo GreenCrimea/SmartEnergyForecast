@@ -32,6 +32,8 @@ class PlotPanel(Frame):
         self.titles = [f'Plot {self.current_subplot}']
         self.y_labels = ["Y-axis"]
         self.x_labels = ["X-axis"]
+        self.legend = [True]
+        self.legend_loc = ["lower right"]
 
 
         #draw default graph
@@ -71,6 +73,8 @@ class PlotPanel(Frame):
         self.ax.set_title(self.titles[self.current_subplot-1])
         self.ax.set_xlabel(self.x_labels[self.current_subplot-1])
         self.ax.set_ylabel(self.y_labels[self.current_subplot-1])
+        if self.legend[self.current_subplot-1] == True:
+            self.ax.legend(loc=self.legend_loc[self.current_subplot-1])
 
         #draw new canvas
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.frame)
@@ -91,6 +95,7 @@ class PlotPanel(Frame):
         self.ax.set_title("Minimum and Maximum Temperatures")
         self.ax.set_xlabel('Days')
         self.ax.set_ylabel('Temperature (c)')
+        self.ax.legend()
 
     def call_plot(self):
         """
@@ -98,7 +103,8 @@ class PlotPanel(Frame):
         """
         for i in range(len(self.gui.settings_panel.y_data[self.current_subplot])):
             self.ax.plot(self.gui.settings_panel.x_data[self.current_subplot], 
-                         self.gui.settings_panel.y_data[self.current_subplot][i])
+                         self.gui.settings_panel.y_data[self.current_subplot][i],
+                         label=self.gui.settings_panel.y_data[self.current_subplot][i].name)
 
     def call_bar(self):
         """
@@ -106,7 +112,8 @@ class PlotPanel(Frame):
         """
         for i in range(len(self.gui.settings_panel.y_data[self.current_subplot])):
             self.ax.bar(self.gui.settings_panel.x_data[self.current_subplot], 
-                        self.gui.settings_panel.y_data[self.current_subplot][i])
+                        self.gui.settings_panel.y_data[self.current_subplot][i],
+                        label=self.gui.settings_panel.y_data[self.current_subplot][i].name)
 
     def call_scatter(self):
         """
@@ -114,4 +121,5 @@ class PlotPanel(Frame):
         """
         for i in range(len(self.gui.settings_panel.y_data[self.current_subplot])):
             self.ax.scatter(self.gui.settings_panel.x_data[self.current_subplot], 
-            self.gui.settings_panel.y_data[self.current_subplot][i])
+                            self.gui.settings_panel.y_data[self.current_subplot][i],
+                            label=self.gui.settings_panel.y_data[self.current_subplot][i].name)
