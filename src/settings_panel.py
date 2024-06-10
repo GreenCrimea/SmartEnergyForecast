@@ -53,9 +53,9 @@ class SettingsPanel(Frame):
         self.x_data = {1: arange(len(self.gui.dataframe))}
 
         self.y_data = {1: []}
-        self.active_columns = {1: ["Maximum temperature (°C)", "Minimum temperature (°C)"]}
-        self.y_data[1].append(self.data_1_active["Maximum temperature (°C)"])
-        self.y_data[1].append(self.data_2_active["Minimum temperature (°C)"])
+        self.active_columns = {1: ["MaximumTemperature__C_", "MinimumTemperature__C_"]}
+        self.y_data[1].append(self.data_1_active["MaximumTemperature__C_"])
+        self.y_data[1].append(self.data_2_active["MinimumTemperature__C_"])
 
     def initialize_settings_panel(self):
         """

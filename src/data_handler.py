@@ -18,6 +18,10 @@ wPATHS = [
     "./datasets/weather_melbourne_06.23-05.24/IDCJDW3050.202405.csv",
 ]
 
+wPATHS2 = [
+    "./datasets/BOM_year.csv"
+]
+
 
 
 def import_dataset(path, index_col, concat=False, skiprows= False):
@@ -25,7 +29,7 @@ def import_dataset(path, index_col, concat=False, skiprows= False):
     todo
     """
     if not concat:
-        return pd.read_csv(path, index_col=index_col, encoding="latin-1")
+        return pd.read_csv(path[0], index_col=index_col, encoding="latin-1")
     frames = []
     for file in path:
         frames.append(pd.read_csv(file, index_col=index_col, encoding="latin-1", skiprows=skiprows))

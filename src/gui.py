@@ -9,7 +9,7 @@ from src.welcome_page import WelcomePage
 from src.date_selector import DateSelector
 from src.settings_panel import SettingsPanel
 from src.plot_panel import PlotPanel
-from src.data_handler import drop_extra_col, import_dataset, wPATHS
+from src.data_handler import drop_extra_col, import_dataset, wPATHS, wPATHS2
 
 
 
@@ -24,6 +24,21 @@ class GUI(Frame):
     """
 
     def __init__(self, parent = None, geometry = "1000x600"):
+
+        self.month_map = {
+            "Jan": '01',
+            "Feb": "02",
+            "Mar": "03",
+            "Apr": "04",
+            "May": "05",
+            "Jun": "06",
+            "Jul": "07",
+            "Aug": "08",
+            "Sep": "09",
+            "Oct": "10",
+            "Nov": "11",
+            "Dec": "12"
+        }
 
         #initialize parent or top level window
         self.parent=parent
@@ -126,9 +141,28 @@ class GUI(Frame):
         """
         use the data_handler module to import the datasets
         """
-        self.data_1 = import_dataset(wPATHS, index_col=False, concat=True, skiprows=8)
-        self.data_2 = import_dataset(wPATHS, index_col=False, concat=True, skiprows=8)
-        self.data_1 = drop_extra_col(self.data_1)
+        self.data_1 = import_dataset(wPATHS2, index_col=False, concat=False, skiprows=False)
+        self.data_2 = import_dataset(wPATHS2, index_col=False, concat=False, skiprows=False)
+        self.fix_months()
+        #self.data_1 = drop_extra_col(self.data_1)
+
+    def fix_months(self):
+        date = self.data_1["Date"]
+        date2 = self.data_2["Date"]
+        var1 = []
+        var2 = []
+        for dates in date:
+            dates = dates.split("-")
+            num = [self.month_map[item] for item in dates if item.isalpha()]
+            var1.append(f"{dates[2]}-{num[0]}-{dates[0]}")
+        for dates in date2:
+            dates = dates.split("-")
+            num = [self.month_map[item] for item in dates if item.isalpha()]
+            var2.append(f"{dates[2]}-{num[0]}-{dates[0]}")
+        
+        self.data_1["Date"] = var1
+        self.data_2["Date"] = var2
+
 
     def select_table(self):
         """
