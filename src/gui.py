@@ -159,7 +159,7 @@ class GUI(Frame):
         """
         todo
         """
-        self.plot_panel = PlotPanel(self.right_top_frame)
+        self.plot_panel = PlotPanel(self.right_top_frame, self)
         self.plot_panel.pack_propagate(False)
 
 

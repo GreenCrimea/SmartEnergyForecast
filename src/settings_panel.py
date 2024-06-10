@@ -1,7 +1,8 @@
 """
 todo
 """
-from tkinter import Frame, Label, Entry, Button, messagebox
+from tkinter import Frame, Label, Entry, Button, messagebox, Canvas, Scrollbar
+from numpy import arange
 from PIL import ImageTk, Image
 from src.tooltip import CreateToolTip
 
@@ -25,7 +26,73 @@ class SettingsPanel(Frame):
         self.frame.pack(side="top", fill="both", expand=True)
         self.frame.pack_propagate(False)
 
+        self.data_1_active = self.gui.data_1
+        self.data_2_active = self.gui.data_2
+
+        self.default_graph_settings()
         self.initialize_date_range()
+        self.initialize_settings_panel()
+
+    def initialize_settings_panel(self):
+        """
+        todo
+        """
+        self.settings_frame = Frame(self.frame)
+        self.settings_frame.pack(side="top", fill="both", expand=True)
+        self.settings_frame.pack_propagate(False)
+
+        self.scrollbar_frame = Frame(self.settings_frame, bg="blue")
+        self.scrollbar_frame.pack(side="right", fill="y", expand=True)
+
+        self.settings_canvas = Canvas(self.settings_frame)
+        self.settings_canvas.pack(side="left", fill="y", expand=True)
+
+        self.settings_scrollbar = Scrollbar(self.scrollbar_frame, orient="vertical", command=self.settings_canvas.yview)
+        self.settings_scrollbar.pack(side="right", fill="y", expand=True)
+
+        self.scrollable_frame = Frame(self.settings_canvas)
+        self.scrollable_frame.bind(
+            "<Configure>",
+            lambda e: self.settings_canvas.configure(
+                scrollregion=self.settings_canvas.bbox("all")
+            )
+        )
+
+        self.settings_canvas.bind("<MouseWheel>", self.on_mouse_wheel)  # Windows and macOS
+        self.settings_canvas.bind("<Button-4>", self.on_mouse_wheel)    # Linux (scroll up)
+        self.settings_canvas.bind("<Button-5>", self.on_mouse_wheel)    # Linux (scroll down)
+
+        self.settings_canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
+        self.settings_canvas.configure(yscrollcommand=self.settings_scrollbar.set)
+
+        for i in range(50):
+            Label(self.scrollable_frame, text=f"Label {i}").pack()
+            Entry(self.scrollable_frame).pack()
+
+    def on_mouse_wheel(self, event):
+        """
+        todo
+        """
+        if event.delta:
+            # Windows and macOS
+            self.settings_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+        elif event.num == 4:
+            # Linux scroll up
+            self.settings_canvas.yview_scroll(-1, "units")
+        elif event.num == 5:
+            # Linux scroll down
+            self.settings_canvas.yview_scroll(1, "units")
+
+    def default_graph_settings(self):
+        """
+        todo
+        """
+        self.x_data = arange(len(self.gui.dataframe))
+
+        self.y_data = []
+        self.y_data.append(self.data_1_active["Maximum temperature (°C)"])
+        self.y_data.append(self.data_2_active["Minimum temperature (°C)"])
+
 
     def initialize_date_range(self):
         """
