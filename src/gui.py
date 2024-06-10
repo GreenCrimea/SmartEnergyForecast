@@ -4,6 +4,7 @@ gui Module
 contains the gui object which is the parent of the tkinter instance
 """
 from tkinter import Frame, Toplevel, Button
+from pandas import read_csv, concat
 from src.table_view import TableView
 from src.welcome_page import WelcomePage
 from src.date_selector import DateSelector
@@ -142,26 +143,28 @@ class GUI(Frame):
         use the data_handler module to import the datasets
         """
         self.data_1 = import_dataset(wPATHS2, index_col=False, concat=False, skiprows=False)
-        self.data_2 = import_dataset(wPATHS2, index_col=False, concat=False, skiprows=False)
+        self.data_2 = read_csv("./datasets/houses_daily_statistics.csv", index_col=False, encoding="latin-1")
         self.fix_months()
+        self.data_2.drop("date", axis=1, inplace=True)
+        self.data_1 = concat([self.data_1, self.data_2], axis=1)
         #self.data_1 = drop_extra_col(self.data_1)
 
     def fix_months(self):
         date = self.data_1["Date"]
-        date2 = self.data_2["Date"]
+        #date2 = self.data_2["Date"]
         var1 = []
         var2 = []
         for dates in date:
             dates = dates.split("-")
             num = [self.month_map[item] for item in dates if item.isalpha()]
             var1.append(f"{dates[2]}-{num[0]}-{dates[0]}")
-        for dates in date2:
-            dates = dates.split("-")
-            num = [self.month_map[item] for item in dates if item.isalpha()]
-            var2.append(f"{dates[2]}-{num[0]}-{dates[0]}")
+        #for dates in date2:
+        #    dates = dates.split("-")
+        #    num = [self.month_map[item] for item in dates if item.isalpha()]
+        #    var2.append(f"{dates[2]}-{num[0]}-{dates[0]}")
         
         self.data_1["Date"] = var1
-        self.data_2["Date"] = var2
+        #self.data_2["Date"] = var2
 
 
     def select_table(self):

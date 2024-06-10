@@ -71,7 +71,6 @@ class DateSelector(Frame):
         for dates in self.gui.dataframe["Date"]:
             self.dates_str.append(dates)
             dates = [int(dates) for dates in dates.split("-")]
-            print(dates)
             self.dates.append(date(dates[0], dates[1], dates[2]))
         #initialise active dates as all dates
         self.active_dates = self.dates

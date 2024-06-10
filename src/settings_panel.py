@@ -55,7 +55,7 @@ class SettingsPanel(Frame):
         self.y_data = {1: []}
         self.active_columns = {1: ["MaximumTemperature__C_", "MinimumTemperature__C_"]}
         self.y_data[1].append(self.data_1_active["MaximumTemperature__C_"])
-        self.y_data[1].append(self.data_2_active["MinimumTemperature__C_"])
+        self.y_data[1].append(self.data_1_active["MinimumTemperature__C_"])
 
     def initialize_settings_panel(self):
         """
@@ -454,17 +454,22 @@ class SettingsPanel(Frame):
         for i in range(self.num_subplots):
             #legend
             if len(self.gui.plot_panel.legend) < self.num_subplots:
-                if i > 0 and i >= len(self.gui.plot_panel.titles):
+                if i > 0 and i >= len(self.gui.plot_panel.legend):
                     self.gui.plot_panel.legend.append(True)
+
+            #ylim
+            if len(self.gui.plot_panel.ylim) < self.num_subplots:
+                if i > 0 and i >= len(self.gui.plot_panel.ylim):
+                    self.gui.plot_panel.ylim.append(False)
 
             #legend location
             if len(self.gui.plot_panel.legend_loc) < self.num_subplots:
-                if i > 0 and i >= len(self.gui.plot_panel.titles):
+                if i > 0 and i >= len(self.gui.plot_panel.legend_loc):
                     self.gui.plot_panel.legend_loc.append("lower right")
 
             #x ticks
             if len(self.gui.plot_panel.x_ticks) < self.num_subplots:
-                if i > 0 and i >= len(self.gui.plot_panel.titles):
+                if i > 0 and i >= len(self.gui.plot_panel.x_ticks):
                     self.gui.plot_panel.x_ticks.append(1)
 
             new_y_data.update({i+1: []})
@@ -483,11 +488,6 @@ class SettingsPanel(Frame):
         self.gui.plot_panel.current_subplot = 1
         self.gui.plot_panel.new_fig()
         for i in range(self.num_subplots):
-
-            #y labels
-            if len(self.gui.plot_panel.ylim) < self.num_subplots:
-                if i > 0 and i >= len(self.gui.plot_panel.titles):
-                    self.gui.plot_panel.y_labels.append(False)
 
             #titles
             if len(self.gui.plot_panel.titles) < self.num_subplots:
