@@ -36,6 +36,7 @@ class PlotPanel(Frame):
         self.legend = [True]
         self.legend_loc = ["lower right"]
         self.x_ticks = [1]
+        self.ylim = [False]
 
 
         #draw default graph
@@ -71,18 +72,26 @@ class PlotPanel(Frame):
             self.gui.settings_panel.subplot_dimensions[1],
             self.current_subplot
         )
+        #ylim
+        if self.ylim[self.current_subplot-1] != False:
+            lims = self.ylim[self.current_subplot-1]
+            self.ax.set_ylim(int(lims[0]), int(lims[1]))
         self.gui.settings_panel.plot_type[self.current_subplot]()
         self.ax.set_title(self.titles[self.current_subplot-1])
         self.ax.set_xlabel(self.x_labels[self.current_subplot-1])
         self.ax.set_ylabel(self.y_labels[self.current_subplot-1])
+        self.ax.set_xlim(0,len(self.gui.date_selector.active_dates))
+        #legend
         if self.legend[self.current_subplot-1] == True:
             self.ax.legend(loc=self.legend_loc[self.current_subplot-1])
+        #xticks
         if self.x_ticks[self.current_subplot-1] == 0:
             labels = []
             for i in linspace(0, len(self.gui.date_selector.active_dates)-1, 5).astype(int):
                 labels.append(self.gui.date_selector.active_dates[i])
             self.ax.set_xticks(linspace(1, len(self.gui.date_selector.active_dates), 5),
                                    labels=labels)
+        self.fig.tight_layout()
 
         #draw new canvas
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.frame)
@@ -100,6 +109,7 @@ class PlotPanel(Frame):
             1
         )
         self.gui.settings_panel.plot_type[self.current_subplot]()
+        self.ax.set_xlim(0,len(self.gui.date_selector.active_dates))
         self.ax.set_title("Minimum and Maximum Temperatures")
         self.ax.set_xlabel('Days')
         self.ax.set_ylabel('Temperature (c)')

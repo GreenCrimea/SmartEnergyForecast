@@ -208,6 +208,21 @@ class SettingsPanel(Frame):
                                 command=lambda i=i: self.x_ticks_date(i))
             x_ticks_date_button.pack(side="left", fill="y", padx=2)
 
+        #ylim
+        self.ylim_menu = {}
+        for i in range(self.num_subplots):
+            ylim_frame = Frame(self.scrollable_frame, height=30)
+            ylim_frame.pack(side="top", fill="x", pady=4)
+            ylim_frame.pack_propagate(False)
+            ylim_label = Label(ylim_frame, text=f"Plot {i+1} y-Limits:")
+            ylim_label.pack(side="left", padx=4)
+            ylim_input = Entry(ylim_frame, width=17)
+            ylim_input.pack(side="left", padx=4)
+            ylim_ok_button = Button(ylim_frame, text="Ok", command= lambda i=i: self.update_ylim(i+1))
+            ylim_ok_button.pack(side="right")
+            new_dict = {i+1: [ylim_frame, ylim_label, ylim_input, ylim_ok_button]}
+            self.ylim_menu.update(new_dict)
+
         #legend
         self.legend_menu = {}
         for i in range(self.num_subplots):
@@ -238,7 +253,17 @@ class SettingsPanel(Frame):
                               legend_loc_frame, legend_loc_label, legend_loc_input, legend_loc_button]}
             self.legend_menu.update(new_dict)
 
-        #
+    def update_ylim(self, i):
+        """
+        todo
+        """
+        input = self.ylim_menu[i][2].get()
+        input = input.replace(" ", "").split(",")
+        if len(self.gui.plot_panel.ylim) < self.num_subplots:
+            for i in range(len(self.num_subplots) -1):
+                self.gui.plot_panel.ylim.append(False)
+        self.gui.plot_panel.ylim[i-1] = [input[0], input[1]]
+        self.redraw_settings()
 
     def x_ticks_date(self, i):
         """
@@ -429,17 +454,17 @@ class SettingsPanel(Frame):
         for i in range(self.num_subplots):
             #legend
             if len(self.gui.plot_panel.legend) < self.num_subplots:
-                if i > 0:
+                if i > 0 and i >= len(self.gui.plot_panel.titles):
                     self.gui.plot_panel.legend.append(True)
 
             #legend location
             if len(self.gui.plot_panel.legend_loc) < self.num_subplots:
-                if i > 0:
+                if i > 0 and i >= len(self.gui.plot_panel.titles):
                     self.gui.plot_panel.legend_loc.append("lower right")
 
             #x ticks
             if len(self.gui.plot_panel.x_ticks) < self.num_subplots:
-                if i > 0:
+                if i > 0 and i >= len(self.gui.plot_panel.titles):
                     self.gui.plot_panel.x_ticks.append(1)
 
             new_y_data.update({i+1: []})
@@ -458,6 +483,11 @@ class SettingsPanel(Frame):
         self.gui.plot_panel.current_subplot = 1
         self.gui.plot_panel.new_fig()
         for i in range(self.num_subplots):
+
+            #y labels
+            if len(self.gui.plot_panel.ylim) < self.num_subplots:
+                if i > 0 and i >= len(self.gui.plot_panel.titles):
+                    self.gui.plot_panel.y_labels.append(False)
 
             #titles
             if len(self.gui.plot_panel.titles) < self.num_subplots:
