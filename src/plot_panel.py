@@ -32,12 +32,13 @@ class PlotPanel(Frame):
         self.gui.settings_panel.plot_type[self.current_subplot] = self.call_plot
         self.titles = [f'Plot {self.current_subplot}']
         self.y_labels = ["Y-axis"]
+        self.s_y_labels = ["2nd Y-axis"]
         self.x_labels = ["X-axis"]
         self.legend = [True]
         self.legend_loc = ["lower right"]
         self.x_ticks = [1]
         self.ylim = [False]
-
+        self.s_ylim = [False]
 
         #draw default graph
         self.init_graph()
@@ -76,14 +77,12 @@ class PlotPanel(Frame):
         if self.ylim[self.current_subplot-1] != False:
             lims = self.ylim[self.current_subplot-1]
             self.ax.set_ylim(int(lims[0]), int(lims[1]))
+
         self.gui.settings_panel.plot_type[self.current_subplot]()
         self.ax.set_title(self.titles[self.current_subplot-1])
         self.ax.set_xlabel(self.x_labels[self.current_subplot-1])
         self.ax.set_ylabel(self.y_labels[self.current_subplot-1])
         self.ax.set_xlim(0,len(self.gui.date_selector.active_dates))
-        #legend
-        if self.legend[self.current_subplot-1] == True:
-            self.ax.legend(loc=self.legend_loc[self.current_subplot-1])
         #xticks
         if self.x_ticks[self.current_subplot-1] == 0:
             labels = []
@@ -91,7 +90,23 @@ class PlotPanel(Frame):
                 labels.append(self.gui.date_selector.active_dates[i])
             self.ax.set_xticks(linspace(1, len(self.gui.date_selector.active_dates), 5),
                                    labels=labels)
-        self.fig.tight_layout()
+        #second_axis
+        if self.gui.s_axis[self.current_subplot-1] == True:
+            self.ax2 = self.ax.twinx()
+            self.gui.settings_panel.plot_type[self.current_subplot](True)
+            self.ax2.set_ylabel(self.s_y_labels[self.current_subplot-1])
+            if self.s_ylim[self.current_subplot-1] != False:
+                lims = self.s_ylim[self.current_subplot-1]
+                self.ax2.set_ylim(int(lims[0]), int(lims[1]))
+            self.ax.legend(loc="lower left")
+            self.ax2.legend(loc="lower right")
+        #legend
+        else:
+            if self.legend[self.current_subplot-1] == True:
+                self.ax.legend(loc=self.legend_loc[self.current_subplot-1])
+
+
+        #self.fig.tight_layout()
 
         #draw new canvas
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.frame)
@@ -115,29 +130,47 @@ class PlotPanel(Frame):
         self.ax.set_ylabel('Temperature (c)')
         self.ax.legend()
 
-    def call_plot(self):
+    def call_plot(self, s_axis = False):
         """
         todo
         """
-        for i in range(len(self.gui.settings_panel.y_data[self.current_subplot])):
-            self.ax.plot(self.gui.settings_panel.x_data[self.current_subplot], 
-                         self.gui.settings_panel.y_data[self.current_subplot][i],
-                         label=self.gui.settings_panel.y_data[self.current_subplot][i].name)
+        if s_axis == True:
+            for i in range(len(self.gui.settings_panel.s_y_data[self.current_subplot])):
+                self.ax2.plot(self.gui.settings_panel.x_data[self.current_subplot], 
+                             self.gui.settings_panel.s_y_data[self.current_subplot][i], "r",
+                             label=self.gui.settings_panel.s_y_data[self.current_subplot][i].name)
+        else:
+            for i in range(len(self.gui.settings_panel.y_data[self.current_subplot])):
+                self.ax.plot(self.gui.settings_panel.x_data[self.current_subplot], 
+                             self.gui.settings_panel.y_data[self.current_subplot][i],
+                             label=self.gui.settings_panel.y_data[self.current_subplot][i].name)
 
-    def call_bar(self):
+    def call_bar(self, s_axis = False):
         """
         todo
         """
-        for i in range(len(self.gui.settings_panel.y_data[self.current_subplot])):
-            self.ax.bar(self.gui.settings_panel.x_data[self.current_subplot], 
-                        self.gui.settings_panel.y_data[self.current_subplot][i],
-                        label=self.gui.settings_panel.y_data[self.current_subplot][i].name)
+        if s_axis == True:
+            for i in range(len(self.gui.settings_panel.s_y_data[self.current_subplot])):
+                self.ax2.bar(self.gui.settings_panel.x_data[self.current_subplot], 
+                             self.gui.settings_panel.s_y_data[self.current_subplot][i], "r",
+                             label=self.gui.settings_panel.s_y_data[self.current_subplot][i].name)
+        else:
+            for i in range(len(self.gui.settings_panel.y_data[self.current_subplot])):
+                self.ax.bar(self.gui.settings_panel.x_data[self.current_subplot], 
+                             self.gui.settings_panel.y_data[self.current_subplot][i],
+                             label=self.gui.settings_panel.y_data[self.current_subplot][i].name)
 
-    def call_scatter(self):
+    def call_scatter(self, s_axis = False):
         """
         todo
         """
-        for i in range(len(self.gui.settings_panel.y_data[self.current_subplot])):
-            self.ax.scatter(self.gui.settings_panel.x_data[self.current_subplot], 
-                            self.gui.settings_panel.y_data[self.current_subplot][i],
-                            label=self.gui.settings_panel.y_data[self.current_subplot][i].name)
+        if s_axis == True:
+            for i in range(len(self.gui.settings_panel.s_y_data[self.current_subplot])):
+                self.ax2.scatter(self.gui.settings_panel.x_data[self.current_subplot], 
+                             self.gui.settings_panel.s_y_data[self.current_subplot][i], "r",
+                             label=self.gui.settings_panel.s_y_data[self.current_subplot][i].name)
+        else:
+            for i in range(len(self.gui.settings_panel.y_data[self.current_subplot])):
+                self.ax.scatter(self.gui.settings_panel.x_data[self.current_subplot], 
+                             self.gui.settings_panel.y_data[self.current_subplot][i],
+                             label=self.gui.settings_panel.y_data[self.current_subplot][i].name)

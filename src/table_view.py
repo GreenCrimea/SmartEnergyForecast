@@ -66,9 +66,14 @@ class TableView(Frame):
             column_selected = self.table.getSelectedColumn()
 
         if self.gui.settings_panel.selecting_column != False:
-            column_selected = self.df.columns[column_selected]
-            if column_selected not in self.gui.settings_panel.get_ydata_input(self.gui.settings_panel.selecting_column):
-                self.gui.settings_panel.insert_ydata_input(self.gui.settings_panel.selecting_column, column_selected)
+            if self.gui.settings_panel.selecting_axis == 1:
+                column_selected = self.df.columns[column_selected]
+                if column_selected not in self.gui.settings_panel.get_ydata_input(self.gui.settings_panel.selecting_column):
+                    self.gui.settings_panel.insert_ydata_input(self.gui.settings_panel.selecting_column, column_selected)
+            else:
+                column_selected = self.df.columns[column_selected]
+                if column_selected not in self.gui.settings_panel.get_ydata_input(self.gui.settings_panel.selecting_column, True):
+                    self.gui.settings_panel.insert_ydata_input(self.gui.settings_panel.selecting_column, column_selected, True)
 
 
     def move_table(self, row, col):

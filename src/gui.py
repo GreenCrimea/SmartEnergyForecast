@@ -54,6 +54,9 @@ class GUI(Frame):
         self.master.geometry(geometry)
         self.font = ("Arial", "10", "Arial 10")
 
+        #second axis settings
+        self.s_axis = [False]
+
         #active data
         self.dataframe = None
 

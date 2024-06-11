@@ -32,6 +32,7 @@ class SettingsPanel(Frame):
         self.data_2_active = self.gui.data_2
 
         self.selecting_column = False
+        self.selecting_axis = 1
 
         self.from_len = 0
         self.to_len = 0
@@ -56,6 +57,11 @@ class SettingsPanel(Frame):
         self.active_columns = {1: ["MaximumTemperature__C_", "MinimumTemperature__C_"]}
         self.y_data[1].append(self.data_1_active["MaximumTemperature__C_"])
         self.y_data[1].append(self.data_1_active["MinimumTemperature__C_"])
+
+        #second axis
+        self.s_y_data = {1: []}
+        self.s_active_columns = {1: ["house3_average"]}
+        self.s_y_data[1].append(self.data_1_active["house3_average"])
 
     def initialize_settings_panel(self):
         """
@@ -147,6 +153,51 @@ class SettingsPanel(Frame):
                               y_data_select_button, y_data_ok_button]}
             self.y_data_menu.update(new_dict)
 
+        #second axis button:
+        self.s_axis_menu = {}
+        for i in range(self.num_subplots):
+            var = IntVar()
+            s_axis_frame = Frame(self.scrollable_frame, height=30)
+            s_axis_frame.pack(side="top", fill="x", pady=4)
+            s_axis_frame.pack_propagate(False)
+            s_axis_label = Label(s_axis_frame, text=f"Plot {i+1} Second Y axis:")
+            s_axis_label.pack(side="left", padx=4)
+            s_axis_on_button = Radiobutton(s_axis_frame, variable=var, value=1, text="On", 
+                                           command=lambda i=i: self.s_axis_on(i))
+            s_axis_on_button.pack(side="left", fill="y", padx=2)
+            s_axis_off_button = Radiobutton(s_axis_frame, variable=var, value=0, text="Off", 
+                                command=lambda i=i: self.s_axis_off(i))
+            s_axis_off_button.pack(side="left", fill="y", padx=2)
+
+        #second axis y data
+        if len(self.gui.s_axis) < self.num_subplots:
+                if i > 0 and i >= len(self.gui.s_axis):
+                    self.gui.s_axis.append(False)
+
+        self.s_y_data_menu = {}
+        for i in range(self.num_subplots):
+            if self.gui.s_axis[i] == True:
+                s_y_data_frame = Frame(self.scrollable_frame, height=100)
+                s_y_data_frame.pack(side="top", fill="x", pady=4)
+                s_y_data_frame.pack_propagate(False)
+                s_y_data_label = Label(s_y_data_frame, text=f"Plot {i+1} 2nd y-data:")
+                s_y_data_label.pack(side="left", padx=4)
+                s_y_data_input = Text(s_y_data_frame, font=("Arial", 8), wrap="word", width=22)
+                s_y_data_input.pack(side="left")
+                s_y_data_button_frame = Frame(s_y_data_frame)
+                s_y_data_button_frame.pack(side="right", fill="both", expand=True)
+                s_y_data_button_frame.pack_propagate(False)
+                s_y_data_select_button = Button(s_y_data_button_frame, image=self.eyedropper_icon,
+                                              command= lambda i=i: self.get_ydata(i+1, True))
+                s_y_data_select_button.pack(side="top", pady=8)
+                CreateToolTip(y_data_select_button, text="Select columns from the table as y-data input")
+                s_y_data_ok_button = Button(s_y_data_button_frame, text="Ok", command= lambda i=i: self.update_ydata(i+1, True))
+                s_y_data_ok_button.pack(side="bottom", pady=8)
+                CreateToolTip(y_data_ok_button, text="confirm selection")
+                new_dict = {i+1: [s_y_data_frame, s_y_data_label, s_y_data_input, s_y_data_button_frame,
+                                  s_y_data_select_button, s_y_data_ok_button]}
+                self.s_y_data_menu.update(new_dict)
+
         #title
         self.title_menu = {}
         for i in range(self.num_subplots):
@@ -176,6 +227,22 @@ class SettingsPanel(Frame):
             y_label_ok_button.pack(side="right")
             new_dict = {i+1: [y_label_frame, y_label_label, y_label_input, y_label_ok_button]}
             self.y_label_menu.update(new_dict)
+
+        #second axis y label
+        self.s_y_label_menu = {}
+        for i in range(self.num_subplots):
+            if self.gui.s_axis[i] == True:
+                s_y_label_frame = Frame(self.scrollable_frame, height=30)
+                s_y_label_frame.pack(side="top", fill="x", pady=4)
+                s_y_label_frame.pack_propagate(False)
+                s_y_label_label = Label(s_y_label_frame, text=f"Plot {i+1} 2nd y-Label:")
+                s_y_label_label.pack(side="left", padx=4)
+                s_y_label_input = Entry(s_y_label_frame, width=13)
+                s_y_label_input.pack(side="left", padx=4)
+                s_y_label_ok_button = Button(s_y_label_frame, text="Ok", command= lambda i=i: self.update_y_label(i+1, True))
+                s_y_label_ok_button.pack(side="right")
+                new_dict = {i+1: [s_y_label_frame, s_y_label_label, s_y_label_input, s_y_label_ok_button]}
+                self.s_y_label_menu.update(new_dict)
 
         #x label
         self.x_label_menu = {}
@@ -223,6 +290,22 @@ class SettingsPanel(Frame):
             new_dict = {i+1: [ylim_frame, ylim_label, ylim_input, ylim_ok_button]}
             self.ylim_menu.update(new_dict)
 
+        #2nd axis ylim
+        self.s_ylim_menu = {}
+        for i in range(self.num_subplots):
+            if self.gui.s_axis[i] == True:
+                s_ylim_frame = Frame(self.scrollable_frame, height=30)
+                s_ylim_frame.pack(side="top", fill="x", pady=4)
+                s_ylim_frame.pack_propagate(False)
+                s_ylim_label = Label(s_ylim_frame, text=f"Plot {i+1} 2nd y-Limits:")
+                s_ylim_label.pack(side="left", padx=4)
+                s_ylim_input = Entry(s_ylim_frame, width=12)
+                s_ylim_input.pack(side="left", padx=4)
+                s_ylim_ok_button = Button(s_ylim_frame, text="Ok", command= lambda i=i: self.update_ylim(i+1, True))
+                s_ylim_ok_button.pack(side="right")
+                new_dict = {i+1: [s_ylim_frame, s_ylim_label, s_ylim_input, s_ylim_ok_button]}
+                self.s_ylim_menu.update(new_dict)
+
         #legend
         self.legend_menu = {}
         for i in range(self.num_subplots):
@@ -253,17 +336,50 @@ class SettingsPanel(Frame):
                               legend_loc_frame, legend_loc_label, legend_loc_input, legend_loc_button]}
             self.legend_menu.update(new_dict)
 
-    def update_ylim(self, i):
+    def s_axis_on(self, i):
         """
         todo
         """
-        input = self.ylim_menu[i][2].get()
-        input = input.replace(" ", "").split(",")
-        if len(self.gui.plot_panel.ylim) < self.num_subplots:
+        if self.gui.s_axis[i] == False:
+            self.gui.s_axis[i] = True
+        if len(self.gui.s_axis) < self.num_subplots:
             for i in range(len(self.num_subplots) -1):
-                self.gui.plot_panel.ylim.append(False)
-        self.gui.plot_panel.ylim[i-1] = [input[0], input[1]]
+                self.gui.plot_panel.s_axis.append(False)
         self.redraw_settings()
+        pass
+
+    def s_axis_off(self, i):
+        """
+        todo
+        """
+        if self.gui.s_axis[i] == True:
+            self.gui.s_axis[i] = False
+        if len(self.gui.s_axis) < self.num_subplots:
+            for i in range(len(self.num_subplots) -1):
+                self.gui.s_axis.append(False)
+        self.redraw_settings()
+        pass
+
+    def update_ylim(self, i, s_axis = False):
+        """
+        todo
+        """
+        if s_axis == True:
+            input = self.s_ylim_menu[i][2].get()
+            input = input.replace(" ", "").split(",")
+            if len(self.gui.plot_panel.s_ylim) < self.num_subplots:
+                for i in range(len(self.num_subplots) -1):
+                    self.gui.plot_panel.s_ylim.append(False)
+            self.gui.plot_panel.s_ylim[i-1] = [input[0], input[1]]
+            self.redraw_settings()
+        else:
+            input = self.ylim_menu[i][2].get()
+            input = input.replace(" ", "").split(",")
+            if len(self.gui.plot_panel.ylim) < self.num_subplots:
+                for i in range(len(self.num_subplots) -1):
+                    self.gui.plot_panel.ylim.append(False)
+            self.gui.plot_panel.ylim[i-1] = [input[0], input[1]]
+            self.redraw_settings()
 
     def x_ticks_date(self, i):
         """
@@ -331,17 +447,26 @@ class SettingsPanel(Frame):
         self.gui.plot_panel.x_labels[i-1] = input
         self.redraw_settings()
 
-    def update_y_label(self, i):
+    def update_y_label(self, i, s_axis = False):
         """
         todo
         """
-        input = self.y_label_menu[i][2].get()
-        label1 = self.gui.plot_panel.y_labels[0]
-        if len(self.gui.plot_panel.y_labels) < self.num_subplots:
-            for i in range(len(self.num_subplots) -1):
-                self.gui.plot_panel.y_labels.append(label1)
-        self.gui.plot_panel.y_labels[i-1] = input
-        self.redraw_settings()
+        if s_axis == True:
+            input = self.s_y_label_menu[i][2].get()
+            label1 = self.gui.plot_panel.s_y_labels[0]
+            if len(self.gui.plot_panel.s_y_labels) < self.num_subplots:
+                for i in range(len(self.num_subplots) -1):
+                    self.gui.plot_panel.s_y_labels.append(label1)
+            self.gui.plot_panel.s_y_labels[i-1] = input
+            self.redraw_settings()
+        else:
+            input = self.y_label_menu[i][2].get()
+            label1 = self.gui.plot_panel.y_labels[0]
+            if len(self.gui.plot_panel.y_labels) < self.num_subplots:
+                for i in range(len(self.num_subplots) -1):
+                    self.gui.plot_panel.y_labels.append(label1)
+            self.gui.plot_panel.y_labels[i-1] = input
+            self.redraw_settings()
 
     def update_title(self, i):
         """
@@ -355,48 +480,80 @@ class SettingsPanel(Frame):
         self.gui.plot_panel.titles[i-1] = input
         self.redraw_settings()
 
-    def update_ydata(self, i):
+    def update_ydata(self, i, second_axis=False):
         """
         todo
         """
-        input_list = self.get_ydata_input(i)
-        input_list = input_list[:-1]
+        if second_axis == True:
+            input_list = self.get_ydata_input(i, True)
+            input_list = input_list[:-1]
+        else:
+            input_list = self.get_ydata_input(i)
+            input_list = input_list[:-1]
 
         data_list = []
-        for j in range(len(self.y_data[i])):
-            data_list.append(self.y_data[i][j].name)
+        if second_axis == True:
+            for j in range(len(self.s_y_data[i])):
+                data_list.append(self.s_y_data[i][j].name)
+        else:
+            for j in range(len(self.y_data[i])):
+                data_list.append(self.y_data[i][j].name)
 
         column_list = []
-        for item in input_list:
-            if item[0] == " ":
-                item = item[1:]
-            column_list.append(item)
-            if item not in data_list:
-                self.y_data[i].append(self.data_1_active[item])
+        if second_axis == True:
+            for item in input_list:
+                if item[0] == " ":
+                    item = item[1:]
+                column_list.append(item)
+                if item not in data_list:
+                    self.s_y_data[i].append(self.data_1_active[item])
+        else:
+            for item in input_list:
+                if item[0] == " ":
+                    item = item[1:]
+                column_list.append(item)
+                if item not in data_list:
+                    self.y_data[i].append(self.data_1_active[item])
 
         new_col = []
         for k in range(len(input_list)):
             new_col.append(input_list[k])
             
-        self.active_columns[i] = new_col
+        if second_axis == True:
+            self.s_active_columns[i] = new_col
+        else:
+            self.active_columns[i] = new_col
         self.redraw_settings()
-        self.reset_ydata_input(i)
-        for col in new_col:
-            self.insert_ydata_input(i, col)
-        self.selecting_column = False
+
+        if second_axis == True:
+            self.reset_ydata_input(i, True)
+            for col in new_col:
+                self.insert_ydata_input(i, col, True)
+            self.selecting_axis = 1
+            self.selecting_column = False
+        else:
+            self.reset_ydata_input(i)
+            for col in new_col:
+                self.insert_ydata_input(i, col)
+            self.selecting_column = False
         
 
-    def get_ydata(self, i):
+    def get_ydata(self, i, second_axis=False):
         """
         todo
         """
         self.selecting_column = i
+        if second_axis == True:
+            self.selecting_axis = 2
 
-    def get_ydata_input(self, i):
+    def get_ydata_input(self, i, second_axis=False):
         """
         todo
         """
-        string = self.y_data_menu[i][2].get("1.0", "end")
+        if second_axis == True:
+            string = self.s_y_data_menu[i][2].get("1.0", "end")
+        else:
+            string = self.y_data_menu[i][2].get("1.0", "end")
         list_ = [item for item in string.replace('"', '').replace("\n", "").split(",") if item]
         list__ = []
         for item in list_:
@@ -405,24 +562,34 @@ class SettingsPanel(Frame):
             list__.append(item)
         return list__
 
-    def reset_ydata_input(self, i):
+    def reset_ydata_input(self, i, s_axis = False):
         """
         todo
         """
-        self.y_data_menu[i][2].delete("1.0", "end")
+        if s_axis == True:
+            self.s_y_data_menu[i][2].delete("1.0", "end")
+        else:
+            self.s_y_data_menu[i][2].delete("1.0", "end")
 
-    def insert_ydata_input(self, i, string):
+    def insert_ydata_input(self, i, string, second_axis=False):
         """
         todo
         """
-        self.y_data_menu[i][2].insert("end", f'"{string}", ')
+        if second_axis == True:
+            self.s_y_data_menu[i][2].insert("end", f'"{string}", ')
+        else:
+            self.y_data_menu[i][2].insert("end", f'"{string}", ')
 
-    def populate_ydata_input(self, i):
+    def populate_ydata_input(self, i, second_axis=False):
         """
         todo
         """
-        for item in self.y_data[i]:
-            self.y_data_menu[i][2].insert("end", f'"{item.name}", ')
+        if second_axis == True:
+            for item in self.s_y_data[i]:
+                self.s_y_data_menu[i][2].insert("end", f'"{item.name}", ')
+        else:
+            for item in self.y_data[i]:
+                self.y_data_menu[i][2].insert("end", f'"{item.name}", ')
 
     def subplot_button_click(self):
         """
@@ -451,7 +618,9 @@ class SettingsPanel(Frame):
         self.data_2_active = self.gui.table_view.df
 
         new_y_data = {}
+        s_new_y_data = {}
         for i in range(self.num_subplots):
+
             #legend
             if len(self.gui.plot_panel.legend) < self.num_subplots:
                 if i > 0 and i >= len(self.gui.plot_panel.legend):
@@ -461,6 +630,11 @@ class SettingsPanel(Frame):
             if len(self.gui.plot_panel.ylim) < self.num_subplots:
                 if i > 0 and i >= len(self.gui.plot_panel.ylim):
                     self.gui.plot_panel.ylim.append(False)
+
+            #2nd axis ylim
+            if len(self.gui.plot_panel.s_ylim) < self.num_subplots:
+                if i > 0 and i >= len(self.gui.plot_panel.s_ylim):
+                    self.gui.plot_panel.s_ylim.append(False)
 
             #legend location
             if len(self.gui.plot_panel.legend_loc) < self.num_subplots:
@@ -472,6 +646,7 @@ class SettingsPanel(Frame):
                 if i > 0 and i >= len(self.gui.plot_panel.x_ticks):
                     self.gui.plot_panel.x_ticks.append(1)
 
+            #ydata
             new_y_data.update({i+1: []})
             if len(self.active_columns) == self.num_subplots:
                 for j in range(len(self.active_columns[i+1])):
@@ -482,7 +657,21 @@ class SettingsPanel(Frame):
                     new_dict_.update({j+1: self.active_columns[1]})
                     new_y_data[i+1].append(self.data_1_active[self.active_columns[1][j]])
                 self.active_columns = new_dict_
+
+            #second ydata
+            s_new_y_data.update({i+1: []})
+            if len(self.s_active_columns) == self.num_subplots:
+                for j in range(len(self.s_active_columns[i+1])):
+                    s_new_y_data[i+1].append(self.data_1_active[self.s_active_columns[i+1][j]])
+            else:
+                new_dict_ = {}
+                for j in range(len(self.s_active_columns[1])):
+                    new_dict_.update({j+1: self.s_active_columns[1]})
+                    s_new_y_data[i+1].append(self.data_1_active[self.s_active_columns[1][j]])
+                self.s_active_columns = new_dict_
+
         self.y_data = new_y_data
+        self.s_y_data = s_new_y_data
         self.x_data[1] = arange(len(self.y_data[1][0]))
         x_data_ = self.x_data[1]
         self.gui.plot_panel.current_subplot = 1
@@ -498,20 +687,34 @@ class SettingsPanel(Frame):
                 if i > 0 and i >= len(self.gui.plot_panel.y_labels):
                     self.gui.plot_panel.y_labels.append(f"Y-axis")
 
+            #2nd axis y labels
+            if len(self.gui.plot_panel.s_y_labels) < self.num_subplots:
+                if i > 0 and i >= len(self.gui.plot_panel.s_y_labels):
+                    self.gui.plot_panel.s_y_labels.append(f"2nd Y-axis")
+
             #x labels
             if len(self.gui.plot_panel.x_labels) < self.num_subplots:
                 if i > 0 and i >= len(self.gui.plot_panel.x_labels):
                     self.gui.plot_panel.x_labels.append(f"X-axis")
 
             self.plot_type[i+1] = self.gui.plot_panel.call_plot 
+            #ydata
             if i+1 not in self.y_data:
                 self.y_data[i+1] = []
                 for item in self.y_data[1]:
                     self.y_data[i+1].append(item)
+            #s ydata
+            if i+1 not in self.s_y_data:
+                self.s_y_data[i+1] = []
+                for item in self.s_y_data[1]:
+                    self.s_y_data[i+1].append(item)
+
             self.x_data[i+1] = x_data_
             self.gui.plot_panel.redraw_plot()
             self.gui.plot_panel.current_subplot = self.gui.plot_panel.current_subplot + 1
             self.populate_ydata_input(i+1)
+            if self.gui.s_axis[i] == True:
+                self.populate_ydata_input(i+1, True)
         self.gui.plot_panel.current_subplot = 1      
 
     def plot_button(self, subplot):
