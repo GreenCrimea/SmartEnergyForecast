@@ -336,6 +336,81 @@ class SettingsPanel(Frame):
                               legend_loc_frame, legend_loc_label, legend_loc_input, legend_loc_button]}
             self.legend_menu.update(new_dict)
 
+        #colour
+        self.colour_menu = {}
+        for i in range(self.num_subplots):
+            values = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple",\
+                      "tab:brown", "tab:pink", "tab:gray", "tab:olive", "tab:cyan", "black"]
+            colour_menu_element = {}
+            if i+1 in self.y_data:
+                x = len(self.y_data[i+1])
+            else:
+                x = 2
+            for j in range(x): 
+                var=IntVar()
+                colour_frame = Frame(self.scrollable_frame, height=30)
+                colour_frame.pack(side="top", fill="x", pady=4)
+                colour_frame.pack_propagate(False)
+                colour_label = Label(colour_frame, text=f"Plot {i+1} item {j+1} Colour:")
+                colour_label.pack(side="left", fill="y", padx=4)
+                colour_input = Combobox(colour_frame, values=values, width=10)
+                colour_input.pack(side="left", fill="y", padx=3)
+                colour_button = Button(colour_frame, text="Ok", command=lambda i=i, j=j: self.set_colour(i, j))
+                colour_button.pack(side="right")
+                new_dict = {j: [colour_frame, colour_label, colour_input, colour_button]}
+                colour_menu_element.update(new_dict)
+            _new_dict = {i+1: colour_menu_element}
+            self.colour_menu.update(_new_dict)
+
+        #colour 2nd axis
+        self.s_colour_menu = {}
+        for i in range(self.num_subplots):
+            values = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple",\
+                      "tab:brown", "tab:pink", "tab:gray", "tab:olive", "tab:cyan", "black"]
+            s_colour_menu_element = {}
+            if i+1 in self.s_y_data:
+                x = len(self.s_y_data[i+1])
+            else:
+                x = 1
+            for j in range(x): 
+                var=IntVar()
+                s_colour_frame = Frame(self.scrollable_frame, height=30)
+                s_colour_frame.pack(side="top", fill="x", pady=4)
+                s_colour_frame.pack_propagate(False)
+                s_colour_label = Label(s_colour_frame, text=f"Plot{i+1}-2 item{j+1} Colour:")
+                s_colour_label.pack(side="left", fill="y", padx=4)
+                s_colour_input = Combobox(s_colour_frame, values=values, width=10)
+                s_colour_input.pack(side="left", fill="y", padx=3)
+                s_colour_button = Button(s_colour_frame, text="Ok", command=lambda i=i, j=j: self.set_colour(i, j, True))
+                s_colour_button.pack(side="right")
+                new_dict = {j: [s_colour_frame, s_colour_label, s_colour_input, s_colour_button]}
+                s_colour_menu_element.update(new_dict)
+            _new_dict = {i+1: s_colour_menu_element}
+            self.s_colour_menu.update(_new_dict)
+
+    def set_colour(self, i, j, s_axis=False):
+        """
+        todo
+        """
+        if s_axis == True:
+            input = self.s_colour_menu[i+1][j]
+            input = input[2].get()
+            label1 = self.gui.plot_panel.s_colours[0]
+            if len(self.gui.plot_panel.s_colours) < self.num_subplots:
+                for i in range(len(self.num_subplots) -1):
+                    self.gui.plot_panel.s_colours.append(label1)
+            self.gui.plot_panel.s_colours[i][j] = input
+            self.redraw_settings()
+        else:
+            input = self.colour_menu[i+1][j]
+            input = input[2].get()
+            label1 = self.gui.plot_panel.colours[0]
+            if len(self.gui.plot_panel.colours) < self.num_subplots:
+                for i in range(len(self.num_subplots) -1):
+                    self.gui.plot_panel.colours.append(label1)
+            self.gui.plot_panel.colours[i][j] = input
+            self.redraw_settings()
+
     def s_axis_on(self, i):
         """
         todo
@@ -346,7 +421,6 @@ class SettingsPanel(Frame):
             for i in range(len(self.num_subplots) -1):
                 self.gui.plot_panel.s_axis.append(False)
         self.redraw_settings()
-        pass
 
     def s_axis_off(self, i):
         """
@@ -358,7 +432,6 @@ class SettingsPanel(Frame):
             for i in range(len(self.num_subplots) -1):
                 self.gui.s_axis.append(False)
         self.redraw_settings()
-        pass
 
     def update_ylim(self, i, s_axis = False):
         """
@@ -686,6 +759,22 @@ class SettingsPanel(Frame):
             if len(self.gui.plot_panel.y_labels) < self.num_subplots:
                 if i > 0 and i >= len(self.gui.plot_panel.y_labels):
                     self.gui.plot_panel.y_labels.append(f"Y-axis")
+
+            #colours
+            if len(self.gui.plot_panel.colours) < self.num_subplots:
+                if i > 0 and i >= len(self.gui.plot_panel.colours):
+                    self.gui.plot_panel.colours.append(["tab:blue", "tab:orange"])
+            if len(self.gui.plot_panel.colours[i]) < len(self.y_data[i+1]):
+                for j in range(len(self.gui.plot_panel.colours[i]),len(self.y_data[i+1])):
+                    self.gui.plot_panel.colours[i][j].append("tab:green")
+
+            #2nd axis colours
+            if len(self.gui.plot_panel.s_colours) < self.num_subplots:
+                if i > 0 and i >= len(self.gui.plot_panel.s_colours):
+                    self.gui.plot_panel.s_colours.append(["tab:red"])
+            if len(self.gui.plot_panel.s_colours[i]) < len(self.s_y_data[i+1]):
+                for j in range(len(self.gui.plot_panel.s_colours[i]),len(self.s_y_data[i+1])):
+                    self.gui.plot_panel.s_colours[i].append("tab:green")
 
             #2nd axis y labels
             if len(self.gui.plot_panel.s_y_labels) < self.num_subplots:

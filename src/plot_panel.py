@@ -39,6 +39,8 @@ class PlotPanel(Frame):
         self.x_ticks = [1]
         self.ylim = [False]
         self.s_ylim = [False]
+        self.colours = [["tab:blue", "tab:orange"]]
+        self.s_colours = [["tab:red"]]
 
         #draw default graph
         self.init_graph()
@@ -137,12 +139,14 @@ class PlotPanel(Frame):
         if s_axis == True:
             for i in range(len(self.gui.settings_panel.s_y_data[self.current_subplot])):
                 self.ax2.plot(self.gui.settings_panel.x_data[self.current_subplot], 
-                             self.gui.settings_panel.s_y_data[self.current_subplot][i], "r",
+                             self.gui.settings_panel.s_y_data[self.current_subplot][i],
+                             color=self.s_colours[self.current_subplot-1][i],
                              label=self.gui.settings_panel.s_y_data[self.current_subplot][i].name)
         else:
             for i in range(len(self.gui.settings_panel.y_data[self.current_subplot])):
                 self.ax.plot(self.gui.settings_panel.x_data[self.current_subplot], 
                              self.gui.settings_panel.y_data[self.current_subplot][i],
+                             color=self.colours[self.current_subplot-1][i],
                              label=self.gui.settings_panel.y_data[self.current_subplot][i].name)
 
     def call_bar(self, s_axis = False):
@@ -152,12 +156,14 @@ class PlotPanel(Frame):
         if s_axis == True:
             for i in range(len(self.gui.settings_panel.s_y_data[self.current_subplot])):
                 self.ax2.bar(self.gui.settings_panel.x_data[self.current_subplot], 
-                             self.gui.settings_panel.s_y_data[self.current_subplot][i], "r",
+                             self.gui.settings_panel.s_y_data[self.current_subplot][i],
+                             color=self.s_colours[self.current_subplot-1][i],
                              label=self.gui.settings_panel.s_y_data[self.current_subplot][i].name)
         else:
             for i in range(len(self.gui.settings_panel.y_data[self.current_subplot])):
                 self.ax.bar(self.gui.settings_panel.x_data[self.current_subplot], 
                              self.gui.settings_panel.y_data[self.current_subplot][i],
+                             color=self.colours[self.current_subplot-1][i],
                              label=self.gui.settings_panel.y_data[self.current_subplot][i].name)
 
     def call_scatter(self, s_axis = False):
@@ -167,10 +173,12 @@ class PlotPanel(Frame):
         if s_axis == True:
             for i in range(len(self.gui.settings_panel.s_y_data[self.current_subplot])):
                 self.ax2.scatter(self.gui.settings_panel.x_data[self.current_subplot], 
-                             self.gui.settings_panel.s_y_data[self.current_subplot][i], "r",
+                             self.gui.settings_panel.s_y_data[self.current_subplot][i],
+                             color=self.s_colours[self.current_subplot-1][i],
                              label=self.gui.settings_panel.s_y_data[self.current_subplot][i].name)
         else:
             for i in range(len(self.gui.settings_panel.y_data[self.current_subplot])):
                 self.ax.scatter(self.gui.settings_panel.x_data[self.current_subplot], 
                              self.gui.settings_panel.y_data[self.current_subplot][i],
+                             color=self.colours[self.current_subplot-1][i],
                              label=self.gui.settings_panel.y_data[self.current_subplot][i].name)
