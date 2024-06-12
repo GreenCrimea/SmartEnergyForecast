@@ -84,15 +84,15 @@ class GUI(Frame):
         """
         self.selected_table = 1
 
-        #table 1 button
-        self.table_1_button = Button(self.right_bar_frame, text="Table 1", relief="sunken", command=self.table_1_click)
-        self.table_1_button.pack(side="left", expand=False, fill="y", padx=8)
-        self.table_1_button.pack_propagate(False)
+        ##table 1 button
+        #self.table_1_button = Button(self.right_bar_frame, text="Table 1", relief="sunken", command=self.table_1_click)
+        #self.table_1_button.pack(side="left", expand=False, fill="y", padx=8)
+        #self.table_1_button.pack_propagate(False)
 
-        #table 2 button
-        self.table_2_button = Button(self.right_bar_frame, text="Table 2", relief="raised", command=self.table_2_click)
-        self.table_2_button.pack(side="left", expand=False, fill="y", padx=8)
-        self.table_2_button.pack_propagate(False)
+        ##table 2 button
+        #self.table_2_button = Button(self.right_bar_frame, text="Table 2", relief="raised", command=self.table_2_click)
+        #self.table_2_button.pack(side="left", expand=False, fill="y", padx=8)
+        #self.table_2_button.pack_propagate(False)
 
         #analyze dataset button
         self.analyze_button = Button(self.right_bar_frame, text="Analyze Dataset", command=None)
@@ -117,8 +117,8 @@ class GUI(Frame):
             self.table_view.destroy()
             self.create_table()
             self.table_view.set_inactive_rows()
-            self.table_1_button.config(relief="sunken")
-            self.table_2_button.config(relief="raised")
+            #self.table_1_button.config(relief="sunken")
+            #self.table_2_button.config(relief="raised")
 
     def table_2_click(self):
         """
@@ -138,8 +138,8 @@ class GUI(Frame):
             self.table_view.destroy()
             self.create_table()
             self.table_view.set_inactive_rows()
-            self.table_2_button.configure(relief="sunken")
-            self.table_1_button.configure(relief="raised")
+            #self.table_2_button.configure(relief="sunken")
+            #self.table_1_button.configure(relief="raised")
 
     def load_data(self):
         """
@@ -230,7 +230,7 @@ class GUI(Frame):
         if width < 1001:
             self.left_frame.config(width=int(0.35 * width))
         else:
-            self.left_frame.config(width=int(0.25 * width))
+            self.left_frame.config(width=int(0.185 * width))
 
         # Update heights
         self.left_top_frame.config(height=int(0.65 * height))

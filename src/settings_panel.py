@@ -365,28 +365,29 @@ class SettingsPanel(Frame):
         #colour 2nd axis
         self.s_colour_menu = {}
         for i in range(self.num_subplots):
-            values = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple",\
-                      "tab:brown", "tab:pink", "tab:gray", "tab:olive", "tab:cyan", "black"]
-            s_colour_menu_element = {}
-            if i+1 in self.s_y_data:
-                x = len(self.s_y_data[i+1])
-            else:
-                x = 1
-            for j in range(x): 
-                var=IntVar()
-                s_colour_frame = Frame(self.scrollable_frame, height=30)
-                s_colour_frame.pack(side="top", fill="x", pady=4)
-                s_colour_frame.pack_propagate(False)
-                s_colour_label = Label(s_colour_frame, text=f"Plot{i+1}-2 item{j+1} Colour:")
-                s_colour_label.pack(side="left", fill="y", padx=4)
-                s_colour_input = Combobox(s_colour_frame, values=values, width=10)
-                s_colour_input.pack(side="left", fill="y", padx=3)
-                s_colour_button = Button(s_colour_frame, text="Ok", command=lambda i=i, j=j: self.set_colour(i, j, True))
-                s_colour_button.pack(side="right")
-                new_dict = {j: [s_colour_frame, s_colour_label, s_colour_input, s_colour_button]}
-                s_colour_menu_element.update(new_dict)
-            _new_dict = {i+1: s_colour_menu_element}
-            self.s_colour_menu.update(_new_dict)
+            if self.gui.s_axis[i] == True:
+                values = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple",\
+                          "tab:brown", "tab:pink", "tab:gray", "tab:olive", "tab:cyan", "black"]
+                s_colour_menu_element = {}
+                if i+1 in self.s_y_data:
+                    x = len(self.s_y_data[i+1])
+                else:
+                    x = 1
+                for j in range(x): 
+                    var=IntVar()
+                    s_colour_frame = Frame(self.scrollable_frame, height=30)
+                    s_colour_frame.pack(side="top", fill="x", pady=4)
+                    s_colour_frame.pack_propagate(False)
+                    s_colour_label = Label(s_colour_frame, text=f"Plot{i+1}-2 item{j+1} Colour:")
+                    s_colour_label.pack(side="left", fill="y", padx=4)
+                    s_colour_input = Combobox(s_colour_frame, values=values, width=10)
+                    s_colour_input.pack(side="left", fill="y", padx=3)
+                    s_colour_button = Button(s_colour_frame, text="Ok", command=lambda i=i, j=j: self.set_colour(i, j, True))
+                    s_colour_button.pack(side="right")
+                    new_dict = {j: [s_colour_frame, s_colour_label, s_colour_input, s_colour_button]}
+                    s_colour_menu_element.update(new_dict)
+                _new_dict = {i+1: s_colour_menu_element}
+                self.s_colour_menu.update(_new_dict)
 
     def set_colour(self, i, j, s_axis=False):
         """
