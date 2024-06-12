@@ -171,7 +171,7 @@ class SettingsPanel(Frame):
 
         #second axis y data
         if len(self.gui.s_axis) < self.num_subplots:
-                if i > 0 and i >= len(self.gui.s_axis):
+                for i in range(self.num_subplots):
                     self.gui.s_axis.append(False)
 
         self.s_y_data_menu = {}
@@ -683,7 +683,7 @@ class SettingsPanel(Frame):
         if s_axis == True:
             self.s_y_data_menu[i][2].delete("1.0", "end")
         else:
-            self.s_y_data_menu[i][2].delete("1.0", "end")
+            self.y_data_menu[i][2].delete("1.0", "end")
 
     def insert_ydata_input(self, i, string, second_axis=False):
         """
@@ -773,8 +773,9 @@ class SettingsPanel(Frame):
             else:
                 new_dict_ = {}
                 for j in range(len(self.active_columns[1])):
-                    new_dict_.update({j+1: self.active_columns[1]})
                     new_y_data[i+1].append(self.data_1_active[self.active_columns[1][j]])
+                for j in range(self.num_subplots):
+                    new_dict_.update({j+1: self.active_columns[1]})
                 self.active_columns = new_dict_
 
             #second ydata
@@ -785,8 +786,9 @@ class SettingsPanel(Frame):
             else:
                 new_dict_ = {}
                 for j in range(len(self.s_active_columns[1])):
-                    new_dict_.update({j+1: self.s_active_columns[1]})
                     s_new_y_data[i+1].append(self.data_1_active[self.s_active_columns[1][j]])
+                for j in range(self.num_subplots):
+                    new_dict_.update({j+1: self.s_active_columns[1]})
                 self.s_active_columns = new_dict_
 
         self.y_data = new_y_data
@@ -812,7 +814,7 @@ class SettingsPanel(Frame):
                     self.gui.plot_panel.colours.append(["tab:blue", "tab:orange"])
             if len(self.gui.plot_panel.colours[i]) < len(self.y_data[i+1]):
                 for j in range(len(self.gui.plot_panel.colours[i]),len(self.y_data[i+1])):
-                    self.gui.plot_panel.colours[i][j].append("tab:green")
+                    self.gui.plot_panel.colours[i].append("tab:green")
 
             #2nd axis colours
             if len(self.gui.plot_panel.s_colours) < self.num_subplots:
