@@ -275,6 +275,24 @@ class SettingsPanel(Frame):
                                 command=lambda i=i: self.x_ticks_date(i))
             x_ticks_date_button.pack(side="left", fill="y", padx=2)
 
+        #grid button:
+        self.grid_menu = {}
+        for i in range(self.num_subplots):
+            var = IntVar()
+            grid_frame = Frame(self.scrollable_frame, height=30)
+            grid_frame.pack(side="top", fill="x", pady=4)
+            grid_frame.pack_propagate(False)
+            grid_label = Label(grid_frame, text=f"Plot {i+1} Gridlines:")
+            grid_label.pack(side="left", padx=4)
+            grid_pad = Frame(grid_frame, width=10)
+            grid_pad.pack(side="left")
+            grid_on_button = Radiobutton(grid_frame, variable=var, value=1, text="On", 
+                                           command=lambda i=i: self.grid_on(i))
+            grid_on_button.pack(side="left", fill="y", padx=2)
+            grid_off_button = Radiobutton(grid_frame, variable=var, value=0, text="Off", 
+                                command=lambda i=i: self.grid_off(i))
+            grid_off_button.pack(side="left", fill="y", padx=2)
+
         #ylim
         self.ylim_menu = {}
         for i in range(self.num_subplots):
@@ -411,6 +429,28 @@ class SettingsPanel(Frame):
                     self.gui.plot_panel.colours.append(label1)
             self.gui.plot_panel.colours[i][j] = input
             self.redraw_settings()
+
+    def grid_on(self, i):
+        """
+        todo
+        """
+        if self.gui.plot_panel.grid[i] == False:
+            self.gui.plot_panel.grid[i] = True
+        if len(self.gui.plot_panel.grid) < self.num_subplots:
+            for i in range(len(self.num_subplots) -1):
+                self.gui.plot_panel.grid.append(False)
+        self.redraw_settings()
+
+    def grid_off(self, i):
+        """
+        todo
+        """
+        if self.gui.plot_panel.grid [i] == True:
+            self.gui.plot_panel.grid[i] = False
+        if len(self.gui.plot_panel.grid) < self.num_subplots:
+            for i in range(len(self.num_subplots) -1):
+                self.gui.plot_panel.grid.append(False)
+        self.redraw_settings()
 
     def s_axis_on(self, i):
         """
@@ -719,6 +759,11 @@ class SettingsPanel(Frame):
             if len(self.gui.plot_panel.x_ticks) < self.num_subplots:
                 if i > 0 and i >= len(self.gui.plot_panel.x_ticks):
                     self.gui.plot_panel.x_ticks.append(1)
+
+            #grid
+            if len(self.gui.plot_panel.grid) < self.num_subplots:
+                if i > 0 and i >= len(self.gui.plot_panel.grid):
+                    self.gui.plot_panel.grid.append(False)
 
             #ydata
             new_y_data.update({i+1: []})

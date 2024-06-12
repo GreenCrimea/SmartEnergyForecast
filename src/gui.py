@@ -3,7 +3,7 @@ gui Module
 
 contains the gui object which is the parent of the tkinter instance
 """
-from tkinter import Frame, Toplevel, Button
+from tkinter import Frame, Toplevel, Button, Label
 from pandas import read_csv, concat
 from src.table_view import TableView
 from src.welcome_page import WelcomePage
@@ -11,6 +11,9 @@ from src.date_selector import DateSelector
 from src.settings_panel import SettingsPanel
 from src.plot_panel import PlotPanel
 from src.data_handler import drop_extra_col, import_dataset, wPATHS, wPATHS2
+from src.tooltip import CreateToolTip
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 
@@ -95,9 +98,126 @@ class GUI(Frame):
         #self.table_2_button.pack_propagate(False)
 
         #analyze dataset button
-        self.analyze_button = Button(self.right_bar_frame, text="Analyze Dataset", command=None)
+        self.analyze_button = Button(self.right_bar_frame, text="Analyze Dataset", command=self.analyze_dataset)
         self.analyze_button.pack(side="right", expand=False, fill="y", padx=14)
         self.analyze_button.pack_propagate(False)
+        CreateToolTip(self.analyze_button, text="Analyze data in subplot 1")
+
+    def analyze_dataset(self):
+        """
+        todo
+        """
+        window = Toplevel()
+        for i in range(len(self.settings_panel.y_data)):
+            data_list = self.settings_panel.y_data[i+1]
+            for data in data_list:
+                frame = Frame(window)
+                frame.pack()
+                name_frame = Frame(frame)
+                name_frame.pack(side="left")
+                data_frame = Frame(frame)
+                data_frame.pack(side="right", pady=25)
+                label_frame = Frame(name_frame)
+                label_frame.pack(side="top")
+                label = Label(label_frame, text=data.name.replace("_", " "))
+                label.pack(side="left")
+
+                val_frame = Frame(data_frame)
+                val_frame.pack(side="left")
+
+                max_frame = Frame(val_frame)
+                max_frame.pack(side="top")
+                max_l = Label(max_frame, text=f"Max: {data.max():.2f}")
+                max_l.pack(side="left")
+
+                min_frame = Frame(val_frame)
+                min_frame.pack(side="top")
+                min_l = Label(min_frame, text=f"Min: {data.min():.2f}")
+                min_l.pack(side="left")
+
+                avg_frame = Frame(val_frame)
+                avg_frame.pack(side="top")
+                avg_l = Label(avg_frame, text=f"Average: {data.mean():.2f}")
+                avg_l.pack(side="left")
+
+                std_frame = Frame(val_frame)
+                std_frame.pack(side="top")
+                std_l = Label(std_frame, text=f"Standard Deviation: {data.std():.2f}")
+                std_l.pack()
+
+                plot_frame = Frame(data_frame)
+                plot_frame.pack(side="right", padx=20)
+
+                fig = Figure(figsize=(5, 4), dpi=70)
+
+                canvas = FigureCanvasTkAgg(fig, master=plot_frame)
+                canvas.draw()
+                canvas.get_tk_widget().pack(side="right", fill="both", expand=1)
+
+                ax = fig.add_subplot(1,1,1)
+
+                ax.hist(data, bins=10, alpha=0.7)
+                ax.set_title(f"{data.name.replace("_", " ")} Histogram")
+                ax.set_ylabel("Amount")
+                ax.set_xlabel("Value")
+                ax.grid(True)
+            
+
+        if self.s_axis[0] == True:
+            for i in range(len(self.settings_panel.s_y_data)):
+                data_list = self.settings_panel.s_y_data[i+1]
+                for data in data_list:
+                    frame = Frame(window)
+                    frame.pack()
+                    name_frame = Frame(frame)
+                    name_frame.pack(side="left")
+                    data_frame = Frame(frame)
+                    data_frame.pack(side="right", pady=25)
+                    label_frame = Frame(name_frame)
+                    label_frame.pack(side="top")
+                    label = Label(label_frame, text=data.name.replace("_", " "))
+                    label.pack(side="left")
+
+                    val_frame = Frame(data_frame)
+                    val_frame.pack(side="left")
+
+                    max_frame = Frame(val_frame)
+                    max_frame.pack(side="top")
+                    max_l = Label(max_frame, text=f"Max: {data.max():.2f}")
+                    max_l.pack(side="left")
+
+                    min_frame = Frame(val_frame)
+                    min_frame.pack(side="top")
+                    min_l = Label(min_frame, text=f"Min: {data.min():.2f}")
+                    min_l.pack(side="left")
+
+                    avg_frame = Frame(val_frame)
+                    avg_frame.pack(side="top")
+                    avg_l = Label(avg_frame, text=f"Average: {data.mean():.2f}")
+                    avg_l.pack(side="left")
+
+                    std_frame = Frame(val_frame)
+                    std_frame.pack(side="top")
+                    std_l = Label(std_frame, text=f"Standard Deviation: {data.std():.2f}")
+                    std_l.pack()
+
+                    plot_frame = Frame(data_frame)
+                    plot_frame.pack(side="right", padx=20)
+
+                    fig = Figure(figsize=(5, 4), dpi=70)
+
+                    canvas = FigureCanvasTkAgg(fig, master=plot_frame)
+                    canvas.draw()
+                    canvas.get_tk_widget().pack(side="top", fill="both", expand=1)
+
+                    ax = fig.add_subplot(1,1,1)
+
+                    ax.hist(data, bins=10, alpha=0.7)
+                    ax.set_title(f"{data.name.replace("_", " ")} Histogram")
+                    ax.set_ylabel("Amount")
+                    ax.set_xlabel("Value")
+                    ax.grid(True)
+
 
     def table_1_click(self):
         """

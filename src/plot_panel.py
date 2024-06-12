@@ -41,6 +41,7 @@ class PlotPanel(Frame):
         self.s_ylim = [False]
         self.colours = [["tab:blue", "tab:orange"]]
         self.s_colours = [["tab:red"]]
+        self.grid = [False]
 
         #draw default graph
         self.init_graph()
@@ -100,12 +101,16 @@ class PlotPanel(Frame):
             if self.s_ylim[self.current_subplot-1] != False:
                 lims = self.s_ylim[self.current_subplot-1]
                 self.ax2.set_ylim(int(lims[0]), int(lims[1]))
-            self.ax.legend(loc="lower left")
+            self.ax.legend(loc=self.legend_loc[self.current_subplot-1])
             self.ax2.legend(loc="lower right")
-        #legend
         else:
+            #legend
             if self.legend[self.current_subplot-1] == True:
-                self.ax.legend(loc=self.legend_loc[self.current_subplot-1])
+               self.ax.legend(loc=self.legend_loc[self.current_subplot-1])
+        
+        #grid
+        if self.grid[self.current_subplot-1] == True:
+            self.ax.grid(True)
 
 
         #self.fig.tight_layout()
