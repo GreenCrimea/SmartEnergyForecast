@@ -11,11 +11,11 @@ A Python-based GUI for weather data visualization.
 
 ## Gallery
 
-![screenshot](https://imgur.com/03aupG6)
+![screenshot](https://i.imgur.com/03aupG6.png)
 
-![screenshot](https://imgur.com/zWDegX5)
+![screenshot](https://i.imgur.com/zWDegX5.png)
 
-![screenshot](https://imgur.com/HpNWVCe)
+![screenshot](https://i.imgur.com/HpNWVCe.png)
 
 ## Installation
 
