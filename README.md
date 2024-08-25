@@ -1,6 +1,23 @@
 # SmartEnergyForecast
 
-A Python-based predictive model for the impact of weather patterns on household energy consumption, along with a GUI for data visualization.
+A Python-based GUI for weather data visualization. 
+
+## Features
+
+- Matplotlib integration with support for plot, bar, and scatter functions.
+- Support for multiple plots, and multiple axis per plot
+- Spreadsheet style dataset visualisation.
+- Interactive date picker.
+
+## Gallery
+
+![screenshot](https://imgur.com/03aupG6)
+
+![screenshot](https://imgur.com/zWDegX5)
+
+![screenshot](https://imgur.com/HpNWVCe)
+
+## Installation
 
 to run navigate to the project directory, and run:
 
@@ -8,4 +25,4 @@ to run navigate to the project directory, and run:
 
 this will install the required dependencies for the project, then run smart_energy_forecast.py to open the gui.
 
-There are currently some known bugs in this verison, such as the plot type resettings after every settings change, and some matplotlib elements overlapping. While these bugs could be fixed with more time investment, this project was meant only as a hobby endeavour, and thus has only been completed to a minimum viable level, as a proof of concept. The code also contains very little comments or docstrings, and the nature of the interlinked objects all accessing eachothers attributes may make it hard to decipher how the program is operating.
+
